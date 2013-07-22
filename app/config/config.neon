@@ -1,0 +1,60 @@
+#
+# SECURITY WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+#
+# If you don't protect this directory from direct web access, anybody will be able to see your passwords.
+# http://nette.org/security-warning
+#
+common:
+    parameters:
+
+    php:
+        date.timezone: Europe/Prague
+        # zlib.output_compression: yes
+
+    nette:
+        application:
+            errorPresenter: Error
+
+        database:
+            dsn: 'mysql:host=localhost;dbname=faktury'
+            user: root
+            password:
+
+        session:
+            expiration: 30 days
+
+    services:
+        authenticator: Authenticator('@nette.database.default', %security.salt%)
+
+        themeRepository: ThemeRepository
+        userRepository: UserRepository
+        listingRepository: Admin_moduleRepository
+        listingColumnRepository: Admin_module_columnRepository
+        generalListingRepository: General_moduleRepository
+
+        authorizator:
+            class: Nette\Security\Permission
+            setup:
+                - addRole('guest')
+                - addRole('user', 'guest')
+                - addRole('admin', 'user')
+                - addResource('Account:Default')
+                - addResource('Account:User')
+                - addResource('Admin:Default')
+                - addResource('Admin:Module')
+                - allow('user', 'Account:Default') # všetky akcie resource Account:Default
+                - allow('user', 'Account:User')
+                - allow('admin') # všetky resources a ich akcie
+
+    factories:
+
+
+production < common:
+    parameters:
+        security:
+            salt: $2a$07$
+
+development < common:
+    parameters:
+        security:
+            salt: $2a$07$

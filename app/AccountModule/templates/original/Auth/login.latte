@@ -1,0 +1,20 @@
+{block content}
+
+{form loginForm class=>form-signin}
+    <div n:foreach="$flashes as $flash" class="alert alert-{$flash->type}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {$flash->message}
+    </div>
+
+    <h2 n:block="title" class="form-signin-heading">Please sign in</h2>
+
+    <div n:inner-if="$form->hasErrors()">
+        <div class="alert alert-error" n:foreach="$form->errors as $error">{$error}</div>
+    </div>
+
+    <input n:input="email" class="input-block-level" placeholder="Email" />
+    <input n:input="password" class="input-block-level" placeholder="Password" />
+    <input n:input="send" class="btn btn-large btn-primary" />
+
+    <a class="pull-right" n:href=":front:user:forget">Zabudli ste heslo?</a>
+{/form}

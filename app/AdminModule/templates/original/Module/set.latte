@@ -1,0 +1,111 @@
+{block title}Administrácia účtu{/block}
+
+{block head}
+    <style> .dependentControl_submit { display: none; } </style>
+    <noscript> <style> .dependentControl_submit { display: block; } </style> </noscript>
+{/block}
+
+{block scripts}
+    <script src="{$basePath}/www/admin/js/netteForms.min.js"></script>
+    <script src="{$basePath}/www/admin/js/jquery.nette.js"></script>
+    <script src="{$basePath}/www/admin/js/jquery.ajaxform.js"></script>
+    <script src="{$basePath}/www/admin/js/jquery.nette.dependentselectbox.js"></script>
+
+    <script type="text/javascript">
+        var clicked;
+    
+        $(document).ready(function() {
+
+            colorFilledButtons();
+
+
+            $('.dependentControl').live('click', function() {
+                clicked = $(this).closest('.modal').attr('id');
+            })
+        });
+
+        // global event listener    
+$(document).ajaxSend(
+  function(event,request,settings){
+    $('#' + clicked).modal('hide');
+    $('<div class="modal-backdrop in fade" />')
+            .appendTo(document.body).fadeIn();
+  }
+);
+
+$(document).ajaxComplete(function(event, xhr, settings) {
+  $('.modal-backdrop').fadeOut(500);
+            $('#' + clicked).modal('show');
+            colorFilledButtons();
+});
+
+function colorFilledButtons() {
+    $('.dependentControl').each(function(hhuu) { 
+        if($(this).val() != '') {
+            $(this).parents('fieldset').find('.more-column-button').addClass('btn-inverse').find('i').addClass('icon-white');
+        } 
+    })
+}
+    </script>
+{/block}
+
+{block content}
+<div class="row-fluid">
+
+
+     
+    
+
+        <div class="well">
+        {snippet formSnippet}
+            {form insertEditModuleForm}
+                {foreach $form->getGroups() as $group}
+                    <fieldset>
+                                <span class="label label-info table-label">{$group->options['label']}</span>
+                        {foreach $group->getControls() as $control}
+                            
+                            {if $iterator->getCounter() == 3}
+                                <!-- Button to trigger modal -->
+                                <a href="#modal-{$group->options['label']}" role="button" class="btn btn-mini more-column-button" data-toggle="modal"><i class="icon-cog"></i></a>
+                                
+                                <!-- Modal -->
+                                <div id="modal-{$group->options['label']}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h3 id="myModalLabel">Nastavenia pre stĺpec [ {$group->options['label']} ]</h3>
+                                  </div>
+                                  <div class="modal-body">
+                                    
+                                  
+                            {/if}
+
+                            {if (isset($control->getControl()->attrs['type']) && $control->getControl()->attrs['type'] == "checkbox")}
+                                <label class="checkbox inline">
+                                    {$control->getControl()} {$control->getLabel()}
+                                </label>
+                            {else}
+                                    {$control->getLabel()}
+                                    <div class="controls">
+                                        {$control->getControl()}
+                                    </div>
+                                
+                            {/if}
+
+                            {if $iterator->last}
+                                </div>
+                                  <div class="modal-footer">
+                                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Zavrieť</button>
+                                  </div>
+                                </div>
+                            {/if}
+                        {/foreach}
+                    </fieldset>
+                {/foreach}
+
+                <br>
+                <br>
+                {input show}
+            {/form insertEditModuleForm}
+        {/snippet}
+        </div>
+</div>

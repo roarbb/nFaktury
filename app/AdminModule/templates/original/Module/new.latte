@@ -1,0 +1,13 @@
+{block title}Zoznam modulov{/block}
+
+{block content}
+<div class="row-fluid">
+	<div class="offset3 well new-module-tables">
+		<h2>Vyberte si tabuľku pre modul:</h2>
+		{foreach $tables as $table}
+			<a class="btn btn-primary pick-table" n:href=":admin:module:set $table[0]">
+				<!-- <i class="icon-check icon-white"></i> --> {$table[0]}
+			</a>
+		{/foreach}
+	</div>
+</div>

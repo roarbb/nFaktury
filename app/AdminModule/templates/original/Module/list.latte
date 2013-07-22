@@ -1,0 +1,32 @@
+{block title}Administrácia účtu{/block}
+{block head}
+    <link rel="stylesheet" href="{$basePath}/www/admin/css/grido.css" />
+    <link rel="stylesheet" href="{$basePath}/www/admin/css/datepicker.css" />
+{/block}
+{block scripts}
+    <script src="{$basePath}/www/admin/js/jquery.hashchange.min.js"></script>
+    <script src="{$basePath}/www/admin/js/jquery.maskedinput.min.js"></script>
+    <script src="{$basePath}/www/admin/js/bootstrap-dropdown.js"></script>
+    <script src="{$basePath}/www/admin/js/bootstrap-alert.js"></script>
+    <script src="{$basePath}/www/admin/js/bootstrap-typeahead.js"></script>
+    <script src="{$basePath}/www/admin/js/bootstrap-datepicker.js"></script>
+    <script src="{$basePath}/www/admin/js/netteForms.min.js"></script>
+    <script src="{$basePath}/www/admin/js/jquery.nette.js"></script>
+    <script src="{$basePath}/www/admin/js/jquery.ajaxform.js"></script>
+    <script src="{$basePath}/www/admin/js/jquery.grido.js"></script>
+    <script src="{$basePath}/www/admin/js/utils.js"></script>
+    <script src="{$basePath}/www/admin/js/ajax.js"></script>
+{/block}
+
+
+{block content}
+
+<div id="content">
+	{control grid}
+</div>
+
+{ifCurrent :admin:module:list 1}
+	<a n:href=":admin:module:new" class="btn btn-success"><i class="icon-plus-sign icon-white"></i> Vložiť nový modul</a>
+{else}
+	<a n:href=":admin:module:newrow $moduleId" class="btn btn-success"><i class="icon-plus-sign icon-white"></i> Vložiť nový záznam</a>
+{/ifCurrent}
