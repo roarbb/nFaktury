@@ -28,6 +28,7 @@ common:
 
         themeRepository: ThemeRepository
         userRepository: UserRepository
+        clientRepository: ClientRepository
         listingRepository: Admin_moduleRepository
         listingColumnRepository: Admin_module_columnRepository
         generalListingRepository: General_moduleRepository
@@ -40,6 +41,7 @@ common:
                 - addRole('admin', 'user')
                 - addResource('Account:Default')
                 - addResource('Account:User')
+                - addResource('Account:Client')
                 - addResource('Admin:Default')
                 - addResource('Admin:Module')
                 - allow('user', 'Account:Default') # všetky akcie resource Account:Default

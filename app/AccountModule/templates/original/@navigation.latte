@@ -12,7 +12,8 @@
                     Prihlásený ako <a n:href=":Account:user:" class="navbar-link">{$user->getIdentity()->nickname}</a> | <a n:href="logout!">Odhlásiť</a>
                 </p>
                 <ul class="nav">
-                    <li class="active"><a n:href=":Account:default:">Domov</a></li>
+                    <li n:class="$presenter->isLinkCurrent(':Account:default:*') ? active"><a n:href=":Account:default:">Domov</a></li>
+                    <li n:class="$presenter->isLinkCurrent(':Account:client:*') ? active"><a n:href=":Account:client:">Klineti</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>

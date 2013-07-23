@@ -75,6 +75,33 @@ INSERT INTO `admin_module_column` (`id`, `admin_module_id`, `name`, `replacement
 /*!40000 ALTER TABLE `admin_module_column` ENABLE KEYS */;
 
 
+-- Dumping structure for table faktury.client
+DROP TABLE IF EXISTS `client`;
+CREATE TABLE IF NOT EXISTS `client` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `street` varchar(255) DEFAULT NULL,
+  `zip` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `tel` varchar(255) DEFAULT NULL,
+  `dic` varchar(255) DEFAULT NULL,
+  `ic_dph` varchar(255) DEFAULT NULL,
+  `ico` varchar(255) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_client_user` (`user_id`),
+  CONSTRAINT `FK_client_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- Dumping data for table faktury.client: ~1 rows (approximately)
+DELETE FROM `client`;
+/*!40000 ALTER TABLE `client` DISABLE KEYS */;
+INSERT INTO `client` (`id`, `user_id`, `name`, `street`, `zip`, `city`, `tel`, `dic`, `ic_dph`, `ico`, `created`) VALUES
+(3, 1, 'Novy klient', 'Ulicová 2', '97411', 'Banská Bystrica', '+421 907 885 111', '12', 'sk12', '12', '2013-07-23 23:31:03');
+/*!40000 ALTER TABLE `client` ENABLE KEYS */;
+
+
 -- Dumping structure for table faktury.theme
 DROP TABLE IF EXISTS `theme`;
 CREATE TABLE IF NOT EXISTS `theme` (
@@ -117,13 +144,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniquemail` (`email`),
   UNIQUE KEY `uniquelogin` (`nickname`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Dumping data for table faktury.user: ~1 rows (approximately)
+-- Dumping data for table faktury.user: ~2 rows (approximately)
 DELETE FROM `user`;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id`, `nickname`, `nickname_webalized`, `email`, `password`, `create_date`, `hash`, `role`, `fa_supplier_name`, `fa_supplier_address`, `fa_supplier_zip`, `fa_supplier_city`, `fa_supplier_tel`, `fa_bank_account_no`, `fa_dic`, `fa_ic_dph`, `active`) VALUES
-(1, 'roarbb', 'roarbb', 'roarbb@gmail.com', '$2a$07$$$$$$$$$$$$$$$$$$$$$$.mnEkB8o4j5Gx.R1.SZ8.4TXhYdmA7uK', '2013-07-05 06:55:01', '672z7ohwv7usddgbe6d4', 'admin', 'Jonh Doe', 'Downing Street 42', '85974', 'City', '00421922258313', '520700-xxxxxxxxxx/8360', '1088744629', NULL, 1);
+(1, 'roarbb', 'roarbb', 'roarbb@gmail.com', '$2a$07$$$$$$$$$$$$$$$$$$$$$$.mnEkB8o4j5Gx.R1.SZ8.4TXhYdmA7uK', '2013-07-05 06:55:01', '672z7ohwv7usddgbe6d4', 'admin', 'Jonh Doe', 'Downing Street 42', '85974', 'City', '00421922258313', '520700-xxxxxxxxxx/8360', '1088744629', NULL, 1),
+(3, 'roarbb2', 'roarbb', 'roarbb2@gmail.com', '$2a$07$$$$$$$$$$$$$$$$$$$$$$.mnEkB8o4j5Gx.R1.SZ8.4TXhYdmA7uK', '2013-07-05 06:55:01', '672z7ohwv7usddgbe6d4', 'admin', 'Jonh Doe', 'Downing Street 42', '85974', 'City', '00421922258313', '520700-xxxxxxxxxx/8360', '1088744629', NULL, 1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

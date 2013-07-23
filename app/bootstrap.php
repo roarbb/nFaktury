@@ -32,7 +32,7 @@ if (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_
 	$container->router[] = new Route('index.php', 'Front:Default:default', Route::ONE_WAY);
 
 	$container->router[] = $accountRouter = new RouteList('Account');
-	$accountRouter[] = new Route('account/<presenter>/<action>', 'Default:default');
+	$accountRouter[] = new Route('account/<presenter>/<action>[/<id>]', 'Default:default');
 
     $container->router[] = $adminRouter = new RouteList('Admin');
     $adminRouter[] = new Route('ayr/module/edit/<moduleid>[/<id>]', 'Module:edit');
