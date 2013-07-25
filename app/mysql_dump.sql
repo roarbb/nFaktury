@@ -102,6 +102,55 @@ INSERT INTO `client` (`id`, `user_id`, `name`, `street`, `zip`, `city`, `tel`, `
 /*!40000 ALTER TABLE `client` ENABLE KEYS */;
 
 
+-- Dumping structure for table faktury.invoice
+DROP TABLE IF EXISTS `invoice`;
+CREATE TABLE IF NOT EXISTS `invoice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `invoice_number` varchar(255) NOT NULL,
+  `variable_sign` varchar(255) NOT NULL,
+  `maturity_date` date NOT NULL COMMENT 'Dátum splatnosti',
+  `tax_duty_date` date NOT NULL COMMENT 'Daňová povinnosť',
+  `delivery_date` date NOT NULL COMMENT 'Dátum dodania',
+  `date_of_issue` date NOT NULL COMMENT 'Dátum vyhotovenia',
+  PRIMARY KEY (`id`),
+  KEY `FK_invoice_user` (`user_id`),
+  KEY `FK__client` (`client_id`),
+  CONSTRAINT `FK_invoice_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK__client` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- Dumping data for table faktury.invoice: ~1 rows (approximately)
+DELETE FROM `invoice`;
+/*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
+INSERT INTO `invoice` (`id`, `client_id`, `user_id`, `invoice_number`, `variable_sign`, `maturity_date`, `tax_duty_date`, `delivery_date`, `date_of_issue`) VALUES
+(4, 3, 1, '001/2013', '31021000725', '2013-08-01', '2013-07-25', '2013-07-25', '2013-07-25');
+/*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
+
+
+-- Dumping structure for table faktury.invoice_items
+DROP TABLE IF EXISTS `invoice_items`;
+CREATE TABLE IF NOT EXISTS `invoice_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `invoice_id` int(11) NOT NULL,
+  `text` text NOT NULL,
+  `unit` enum('hour','piece') NOT NULL,
+  `unit_count` float(10,3) NOT NULL,
+  `unit_price` float(10,3) NOT NULL,
+  `vat` float(10,2) DEFAULT NULL,
+  `discount_percentage` float(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK__invoice` (`invoice_id`),
+  CONSTRAINT `FK__invoice` FOREIGN KEY (`invoice_id`) REFERENCES `invoice` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table faktury.invoice_items: ~0 rows (approximately)
+DELETE FROM `invoice_items`;
+/*!40000 ALTER TABLE `invoice_items` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_items` ENABLE KEYS */;
+
+
 -- Dumping structure for table faktury.theme
 DROP TABLE IF EXISTS `theme`;
 CREATE TABLE IF NOT EXISTS `theme` (

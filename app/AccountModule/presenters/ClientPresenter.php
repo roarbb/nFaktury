@@ -95,7 +95,6 @@ class ClientPresenter extends BasePresenter
      */
     protected function createComponentInsertEditClientForm()
     {
-
         $form = new Form();
         $form->setRenderer(new BootstrapRenderer());
 

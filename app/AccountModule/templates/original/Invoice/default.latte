@@ -1,0 +1,30 @@
+{block title}Faktúry{/block}
+
+{block content}
+    <div id="content">
+        {control grid}
+    </div>
+
+    <a n:href=":Account:invoice:new" class="btn btn-success"><i class="icon-plus-sign icon-white"></i> Vložiť novú faktúru</a>
+{/block}
+
+
+{block head}
+    <link rel="stylesheet" href="{$basePath}/www/css/grido.css" />
+    <link rel="stylesheet" href="{$basePath}/www/css/datepicker.css" />
+{/block}
+
+{block scripts}
+    <script src="{$basePath}/www/js/jquery.hashchange.min.js"></script>
+    <script src="{$basePath}/www/js/jquery.maskedinput.min.js"></script>
+    <script src="{$basePath}/www/js/bootstrap-dropdown.js"></script>
+    <script src="{$basePath}/www/js/bootstrap-alert.js"></script>
+    <script src="{$basePath}/www/js/bootstrap-typeahead.js"></script>
+    <script src="{$basePath}/www/js/bootstrap-datepicker.js"></script>
+    <script src="{$basePath}/www/js/netteForms.min.js"></script>
+    <script src="{$basePath}/www/js/jquery.nette.js"></script>
+    <script src="{$basePath}/www/js/jquery.ajaxform.js"></script>
+    <script src="{$basePath}/www/js/jquery.grido.js"></script>
+    <script src="{$basePath}/www/js/utils.js"></script>
+    <script src="{$basePath}/www/js/ajax.js"></script>
+{/block}
