@@ -1,4 +1,10 @@
-{block title}Vkladanie klienta{/block}
+{block title}
+    {if $presenter->action == 'edit'}
+        Úprava faktúry
+    {else}
+        Nová faktúra
+    {/if}
+{/block}
 
 {block content}
 {control insertEditInvoiceForm}

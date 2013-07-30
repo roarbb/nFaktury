@@ -1,0 +1,166 @@
+<html>
+<head>
+    <meta http-equiv="Content-Language" content="sk">
+    <title></title>
+</head>
+
+<body>
+<style type="text/css">
+    body {
+        font-family: Arial;
+    }
+
+    table {
+        font-size: 12px;
+    }
+</style>
+<div>
+    <div style="text-align: right; border-bottom: 2px solid #000000; color: #1A5DAC; font-weight: bold; font-size: 20px;">Faktúra č. {$invoice->invoice_number}</div>
+
+    <table>
+        <tr>
+            <td width="40%">
+                <span style="color: #1A5DAC; font-weight: bold; font-size: 12px;">Dodávateľ:</span>
+                <table style="font-weight: bold; margin-bottom: 15px;">
+                    <tr>
+                        <td>{$user->fa_supplier_name}</td>
+                    </tr>
+                    <tr>
+                        <td>{$user->fa_supplier_address}</td>
+                    </tr>
+                    <tr>
+                        <td>{$user->fa_supplier_city}, {$user->fa_supplier_zip}</td>
+                    </tr>
+                </table>
+
+                <table style="color: #1A5DAC; margin-bottom: 15px;">
+                    <tr>
+                        <td>IČO:</td>
+                        <td>{$user->fa_suplier_ico}</td>
+                    </tr>
+                    <tr>
+                        <td>DIČ:</td>
+                        <td>{$user->fa_dic}</td>
+                    </tr>
+                </table>
+
+                <table style="width: 100%; margin-bottom: 15px;">
+                    <tr>
+                        <td>Číslo účtu:</td>
+                        <td style="text-align: center; border: 3px solid #000000; font-weight: bold" width="220">{$user->fa_bank_account_no}</td>
+                    </tr>
+                </table>
+
+                <table style="width: 100%;">
+                    <tr>
+                        <td>Forma úhrady:</td>
+                        <td style="text-align: center;">prevodom</td>
+                    </tr>
+                    <tr>
+                        <td>Dátum vystavenia:</td>
+                        <td style="text-align: center;">{$invoice->date_of_issue->format('d.m.Y')}</td>
+                    </tr>
+                    <tr>
+                        <td>Dátum splatnosti:</td>
+                        <td style="text-align: center;">{$invoice->maturity_date->format('d.m.Y')}</td>
+                    </tr>
+                    <tr>
+                        <td>Dátum vzniku daňovej povinnosti:</td>
+                        <td style="text-align: center;">{$invoice->tax_duty_date->format('d.m.Y')}</td>
+                    </tr>
+                </table>
+            </td>
+            <td width="60%" align="right">
+                <table style="margin-bottom: 15px;">
+                    <tr>
+                        <td style="text-align: right;">Variabilný symbol:</td>
+                        <td style="text-align: center;">{$invoice->variable_sign}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">Špecifický symbol:</td>
+                        <td style="text-align: center;">-</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">Konštantný symbol:</td>
+                        <td style="text-align: center;">-</td>
+                    </tr>
+                </table>
+
+                <table style="border: 3px solid #000000;">
+                    <tr>
+                        <td width="350">
+                            <span style="color: #1A5DAC; font-weight: bold; font-size: 12px;">Odberateľ:</span>
+                            <table style="margin-bottom: 15px;">
+                                <tr>
+                                    <td>IČO:</td>
+                                    <td>{$client->ico}</td>
+                                </tr>
+                                <tr>
+                                    <td>DIČ:</td>
+                                    <td>{$client->dic}</td>
+                                </tr>
+                            </table>
+
+                            <table style="font-weight: bold; margin-bottom: 15px;">
+                                <tr>
+                                    <td>{$client->name}</td>
+                                </tr>
+                                <tr>
+                                    <td>{$client->street}</td>
+                                </tr>
+                                <tr>
+                                    <td>{$client->city}, {$client->zip}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <div style="border: 1px solid #BEC8CE; clear: both; margin-bottom: 15px;">
+        <table style="width: 100%;">
+            <tr>
+                <td><strong>Položka</strong></td>
+                <td style="text-align: right;"><strong>Cena/jedn.</strong></td>
+                <td style="text-align: right;"><strong>Počet</strong></td>
+                <td style="text-align: right;"><strong>%DPH</strong></td>
+                <td style="text-align: right;"><strong>DPH</strong></td>
+                <td style="text-align: right;"><strong>Cena (EUR)</strong></td>
+            </tr>
+                <tr>
+                    <td>{$invoiceItem->text}</td>
+                    {var $vat_price = (($invoiceItem->unit_price * $invoiceItem->unit_count) / 100) * $invoiceItem->vat}
+                    {var $final_price = ($invoiceItem->unit_price * $invoiceItem->unit_count) + $vat_price}
+                    <td style="text-align: right;">{$invoiceItem->unit_price}</td>
+                    <td style="text-align: right;">{$invoiceItem->unit_count}</td>
+                    <td style="text-align: right;">{$invoiceItem->vat}</td>
+                    <td style="text-align: right;">{$vat_price}</td>
+                    <td style="text-align: right;">{$final_price}</td>
+                </tr>
+        </table>
+    </div>
+
+    <div style="border: 2px solid #000000; margin-bottom: 15px;">
+        <table style="width: 100%;">
+            <tr>
+                <td>Celkom bez DPH (EUR):</td>
+                <td style="text-align: right;">{$invoiceItem->unit_price * $invoiceItem->unit_count}</td>
+            </tr>
+            <tr>
+                <td>DPH (EUR):</td>
+                <td style="text-align: right;">{$vat_price}</td>
+            </tr>
+            <tr style="font-size: 20px;">
+                <td><strong>Cena celkom s DPH (EUR):</strong></td>
+                <td style="text-align: right;"><strong>{$final_price}</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="text-align: right; padding-right: 100px;">
+        <div>Vystavil: {$user->fa_supplier_name}</div>
+    </div>
+</div>
+</body>
+</html>

@@ -8,4 +8,14 @@
 class Invoice_itemsRepository extends Repository
 {
 
-} 
+    public function insertItems($invoiceId, $item)
+    {
+        $item->invoice_id = $invoiceId;
+        return $this->getTable()->insert($item);
+    }
+
+    public function updateItems($invoiceId, $invoiceItem)
+    {
+        $this->findBy(array('invoice_id' => $invoiceId))->update($invoiceItem);
+    }
+}

@@ -24,7 +24,7 @@ common:
             expiration: 30 days
 
     services:
-        authenticator: Authenticator('@nette.database.default', %security.salt%)
+        authenticator: Authenticator(%security.salt%)
 
         themeRepository: ThemeRepository
         userRepository: UserRepository

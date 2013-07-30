@@ -11,7 +11,7 @@
                 <ul class="nav">
                     <li n:class="$presenter->isLinkCurrent(':Front:default:*') ? active"><a n:href=":Front:default:">Domov</a></li>
                     <li n:class="$presenter->isLinkCurrent(':Front:user:register') ? active"><a n:href=":Front:user:register">Registrácia</a></li>
-                    <li><a n:href=":Account:default:">Prihlásenie</a></li>
+                    <li><a n:href=":Account:default:">{if $user->isLoggedIn()}Môj účet{else}Prihlásenie{/if}</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>

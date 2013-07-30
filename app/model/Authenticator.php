@@ -1,5 +1,6 @@
 <?php
 
+use Nette\Database\SelectionFactory;
 use Nette\Security,
 	Nette\Utils\Strings;
 
@@ -9,9 +10,6 @@ use Nette\Security,
  */
 class Authenticator extends Nette\Object implements Security\IAuthenticator
 {
-	/** @var Nette\Database\Connection */
-	private $database;
-
     private $salt;
 
     /**
@@ -29,14 +27,11 @@ class Authenticator extends Nette\Object implements Security\IAuthenticator
 
 
 
-	public function __construct(Nette\Database\Connection $database, $salt, UserRepository $userRepository)
+	public function __construct($salt, UserRepository $userRepository)
 	{
-		$this->database = $database;
         $this->salt = $salt;
         $this->userRepository = $userRepository;
 	}
-
-
 
 	/**
 	 * Performs an authentication.
@@ -47,7 +42,7 @@ class Authenticator extends Nette\Object implements Security\IAuthenticator
 	public function authenticate(array $credentials)
 	{
 		list($email, $password) = $credentials;
-		$row = $this->database->table('user')->where('email', $email)->fetch();
+		$row = $this->userRepository->findBy(array('email' => $email))->fetch();
 
 		if (!$row) {
 			throw new Security\AuthenticationException('The email is incorrect.', self::IDENTITY_NOT_FOUND);

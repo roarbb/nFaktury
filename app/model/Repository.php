@@ -1,26 +1,26 @@
 <?php
+use Nette\Database\SelectionFactory;
 
 /**
  * Provádí operace nad databázovou tabulkou.
  */
 abstract class Repository extends Nette\Object
 {
-	/** @var Nette\Database\Connection */
-	protected $connection;
+    /**
+     * @var Nette\Database\SelectionFactory
+     */
+    protected $connection;
 
-
-
-	public function __construct(Nette\Database\Connection $db)
+    /**
+     * Vrací objekt reprezentující databázovou tabulku.
+     *
+     * @param SelectionFactory $db
+     */
+    public function __construct(SelectionFactory $db)
 	{
 		$this->connection = $db;
 	}
 
-
-
-	/**
-	 * Vrací objekt reprezentující databázovou tabulku.
-	 * @return Nette\Database\Table\Selection
-	 */
 	protected function getTable()
 	{
 		// název tabulky odvodíme z názvu třídy

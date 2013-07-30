@@ -19,7 +19,7 @@ $configurator->enableDebugger(__DIR__ . '/../log');
 $configurator->setTempDirectory(__DIR__ . '/../temp');
 $configurator->createRobotLoader()
 	->addDirectory(__DIR__)
-    ->addDirectory(__DIR__ . '/../libs')
+//    ->addDirectory(__DIR__ . '/../libs')
 	->register();
 
 // Create Dependency Injection container from config.neon file
