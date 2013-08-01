@@ -12,7 +12,7 @@ use Grido\Components\Filters\Filter;
 use Grido\Grid;
 use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 use Nette\Application\UI\Form;
-use Nette\Database\Connection;
+use Nette\Database\SelectionFactory;
 
 class ClientPresenter extends BasePresenter
 {
@@ -22,13 +22,13 @@ class ClientPresenter extends BasePresenter
     private $clientRepository;
 
     /**
-     * @var Connection
+     * @var SelectionFactory
      */
-    private $connection;
+    private $selectionFactory;
 
-    public function inject(Connection $connection, \ClientRepository $clientRepository){
-        $this->connection = $connection;
+    public function inject(\ClientRepository $clientRepository, SelectionFactory $selectionFactory){
         $this->clientRepository = $clientRepository;
+        $this->selectionFactory = $selectionFactory;
     }
 
     public function actionEdit($id) {
@@ -57,7 +57,8 @@ class ClientPresenter extends BasePresenter
 
         $table = 'client';
         $grid = new Grid($this, $name);
-        $grid->setModel($this->connection->table($table)->where('user_id', $this->user->getId()));
+
+        $grid->setModel($this->selectionFactory->table($table)->where('user_id', $this->user->getId()));
 
         $grid->addColumn('id', '#');
         $grid->addFilter('id', 'id');

@@ -7,6 +7,15 @@ use Nette\Utils\Strings;
 
 class UserRepository extends Repository
 {
+    /**
+     * @var \Nette\Mail\IMailer
+     */
+    public $mailer;
+
+    public function inject(\Nette\Mail\IMailer $mailer){
+        $this->mailer = $mailer;
+    }
+
     public function getHash() {
         $hash = Strings::random(20);
         $count = $this->findBy(array('hash' => $hash))->count();
@@ -50,11 +59,12 @@ class UserRepository extends Repository
 
     protected function sendMail($email, FileTemplate $template)
     {
-        $mail = new Message;
-        $mail->setFrom('Altamira <neodpovedaj@altamira.sk>')
+        $message = new Message();
+        $message->setFrom('Altamira <neodpovedaj@altamira.sk>')
             ->addTo($email)
-            ->setHTMLBody($template)
-            ->send();
+            ->setHTMLBody($template);
+
+        $this->mailer->send($message);
     }
 
     public function update($userId, $data)

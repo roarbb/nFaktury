@@ -1,6 +1,29 @@
 {block content}
-<div class="hero-unit">
+<div class="well">
     <h1>Faktúry!</h1>
-    <p>Pre všetkých ktorým sa to hodí (minimálne pre Stepa, ktorý ich kreslí v Adobe Illustrator a pre mňa). Zadarmo.</p>
-    {*<p><a href="http://doc.nette.org/cs/security" class="btn btn-primary btn-large">Viac o autorizácii »</a></p>*}
+    <p>Faktúry zatiaľ fungujú v beta verzii. To znamená že sú dostupné len základné možnosti, ktoré sa budú dopĺňať.</p>
+    <p>
+        <h3>Zatiaľ funguje</h3>
+        <ul>
+            <li>Ukladanie vlastných údajov, teda údaje dodávateľa.</li>
+            <li>Možnosť ukladať si klientov, ktorým často fakturuješ.</li>
+            <li>Do faktúry sa dá vkladať len jeden faktúračný predmet. <b>Zatiaľ!</b></li>
+            <li>Generovanie PDF fakúry</li>
+        </ul>
+    </p>
+
+    <p>
+        <h3>Workflow</h3>
+        Pre vytvorenie faktúry stačí vybrať klienta, vyplniť predmet fakturácie a zapísať fakturovanú sumu. <br>
+        Ostatné veci ako číslo faktúry, variabilný symbol, dátumy splatnosti, daňovej povinnosti atď sú už predvyplnené.<br>
+        <b>Vytvorenie faktúry ti tak zaberie maximálne pár sekund.</b>
+    </p>
+    <br>
+    <br>
+    <p>
+        <h3>Takže</h3>
+        <a n:href=":account:user:" class="btn btn-primary btn-large">Vyplniť vlastné údaje &raquo;</a> a potom
+        <a n:href=":account:client:new" class="btn btn-primary btn-large">Vytvoriť prvého klienta &raquo;</a> a
+        <a n:href=":account:invoice:new" class="btn btn-primary btn-large">Vytvoriť prvú faktúru &raquo;</a>
+    </p>
 </div>

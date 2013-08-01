@@ -29,7 +29,7 @@ class InvoicePresenter extends BasePresenter
     /**
      * @var SelectionFactory
      */
-    private $connection;
+    private $selectionFactory;
     /**
      * @var \InvoiceRepository
      */
@@ -42,11 +42,11 @@ class InvoicePresenter extends BasePresenter
 
     public function inject(\InvoiceRepository $invoiceRepository,
                            \Invoice_itemsRepository $invoiceItemsRepository,
-                           SelectionFactory $connection,
+                           SelectionFactory $selectionFactory,
                            \UserRepository $userRepository,
                            \ClientRepository $clientRepository)
     {
-        $this->connection = $connection;
+        $this->selectionFactory = $selectionFactory;
         $this->invoiceRepository = $invoiceRepository;
         $this->invoiceItemsRepository = $invoiceItemsRepository;
         $this->clientRepository = $clientRepository;
@@ -60,6 +60,12 @@ class InvoicePresenter extends BasePresenter
 
     public function actionShow($id)
     {
+        $isMineClient = $this->invoiceRepository->isMine($id, $this->user->getId());
+        if(!$isMineClient) {
+            $this->flashMessage('Táto faktúra Vám nepatrí.', 'error');
+            $this->redirect(':Account:invoice:');
+        }
+
         $invoice = $this->invoiceRepository->fetchById($id);
         $invoiceItem = $this->invoiceItemsRepository->findBy(array('invoice_id' => $id))->fetch();
         $user = $this->userRepository->fetchById($this->user->getId());
@@ -96,7 +102,7 @@ class InvoicePresenter extends BasePresenter
 
         $table = 'invoice';
         $grid = new Grid($this, $name);
-        $grid->setModel($this->connection->table($table)->where('user_id', $this->user->getId()));
+        $grid->setModel($this->selectionFactory->table($table)->where('user_id', $this->user->getId()));
 
         $grid->addColumn('invoice_number', '#');
         $grid->addFilter('invoice_number', 'invoice_number');
@@ -114,7 +120,7 @@ class InvoicePresenter extends BasePresenter
         $grid->addFilter('maturity_date', 'maturity_date');
 
         $grid->addAction('edit', 'Upraviť')->setIcon('pencil');
-        $grid->addAction('show', 'Ukáž faktúru')->setIcon('list-alt');
+        $grid->addAction('show', 'PDF')->setIcon('list-alt');
         $grid->addAction('delete', 'Vymazať')
             ->setIcon('trash')
             ->setConfirm('Naozaj chcete vymazať túto faktúru?');
@@ -147,7 +153,7 @@ class InvoicePresenter extends BasePresenter
 
         $form->addGroup('Fakturujem Vám');
         $form->addContainer('item');
-        $form['item']->addText('text', 'Popis');
+        $form['item']->addTextarea('text', 'Popis');
         $form['item']->addSelect('unit', 'Jednotka fakturácie', $units);
         $form['item']->addText('unit_count', 'Počet jednotiek');
         $form['item']->addText('unit_price', 'Cena jednotky');

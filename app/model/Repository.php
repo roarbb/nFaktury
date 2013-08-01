@@ -9,26 +9,24 @@ abstract class Repository extends Nette\Object
     /**
      * @var Nette\Database\SelectionFactory
      */
-    protected $connection;
+    protected $selectionFactory;
 
     /**
      * Vrací objekt reprezentující databázovou tabulku.
      *
-     * @param SelectionFactory $db
+     * @param SelectionFactory $selectionFactory
      */
-    public function __construct(SelectionFactory $db)
+    public function __construct(SelectionFactory $selectionFactory)
 	{
-		$this->connection = $db;
+		$this->selectionFactory = $selectionFactory;
 	}
 
 	protected function getTable()
 	{
 		// název tabulky odvodíme z názvu třídy
 		preg_match('#(\w+)Repository$#', get_class($this), $m);
-		return $this->connection->table(lcfirst($m[1]));
+		return $this->selectionFactory->table(lcfirst($m[1]));
 	}
-
-
 
 	/**
 	 * Vrací všechny řádky z tabulky.
