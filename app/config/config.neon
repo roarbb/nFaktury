@@ -13,12 +13,7 @@ common:
 
     nette:
         application:
-            errorPresenter: Error
-
-        database:
-            dsn: 'mysql:host=localhost;dbname=faktury'
-            user: root
-            password:
+            #errorPresenter: Error
 
         session:
             expiration: 30 days
@@ -56,11 +51,9 @@ common:
 
 
 production < common:
-    parameters:
-        security:
-            salt: $2a$07$
+    includes:
+        - config.production.neon
 
 development < common:
-    parameters:
-        security:
-            salt: $2a$07$
+    includes:
+        - config.devel.neon

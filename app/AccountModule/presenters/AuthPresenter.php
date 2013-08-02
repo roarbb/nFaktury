@@ -22,7 +22,7 @@ class AuthPresenter extends BasePresenter
             ->addRule(Form::FILLED, 'Enter email');
         $form->addPassword('password', 'Password:')
             ->addRule(Form::FILLED, 'Enter password');
-        $form->addSubmit('send', 'Log in');
+        $form->addSubmit('send', 'Prihlásiť');
 
         $form->onSuccess[] = $this->processLogin;
         return $form;

@@ -4,6 +4,7 @@ namespace FrontModule;
 
 use Exception;
 use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
+use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Mail\Message;
 use Nette\Utils\Strings;
@@ -103,6 +104,9 @@ class UserPresenter extends \BasePresenter
             $this->redirect(':front:default:');
         } catch (Exception $e) {
             $form->addError($e->getMessage());
+            if ($e instanceof AbortException) {
+                throw $e;
+            }
         }
     }
 

@@ -2,17 +2,19 @@
 
 use Nette\Latte\Engine;
 use Nette\Mail\Message;
+use Nette\Mail\SmtpException;
+use Nette\Mail\SmtpMailer;
 use Nette\Templating\FileTemplate;
 use Nette\Utils\Strings;
 
 class UserRepository extends Repository
 {
     /**
-     * @var \Nette\Mail\IMailer
+     * @var SmtpMailer
      */
     public $mailer;
 
-    public function inject(\Nette\Mail\IMailer $mailer){
+    public function inject(SmtpMailer $mailer){
         $this->mailer = $mailer;
     }
 
@@ -60,11 +62,18 @@ class UserRepository extends Repository
     protected function sendMail($email, FileTemplate $template)
     {
         $message = new Message();
-        $message->setFrom('Altamira <neodpovedaj@altamira.sk>')
+        $message->setFrom('faktury@sajgal.com')
             ->addTo($email)
             ->setHTMLBody($template);
 
-        $this->mailer->send($message);
+        try
+        {
+            $this->mailer->send($message);
+        }
+        catch (SmtpException $e)
+        {
+            echo $e->getMessage();
+        }
     }
 
     public function update($userId, $data)
