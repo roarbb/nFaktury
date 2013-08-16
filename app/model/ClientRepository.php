@@ -40,4 +40,11 @@ class ClientRepository extends Repository
     {
         $this->fetchById($clientId)->delete();
     }
+
+    public function getClientsForUser($userId)
+    {
+        return $this->findBy(array(
+            'user_id' => $userId,
+        ))->fetchPairs('id', 'name');
+    }
 } 

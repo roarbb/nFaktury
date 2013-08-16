@@ -14,7 +14,8 @@
     "require": {
         "php": ">= 5.3.0",
         "nette/nette": ">= 2.0.11",
-        "castamir/pdf-response": "2.0"
+        "castamir/pdf-response": "2.0",
+        "kdyby/forms-replicator": "@dev"
     },
     "require-dev": {
         "nette/tester": "@dev"

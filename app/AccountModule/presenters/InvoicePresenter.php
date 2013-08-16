@@ -8,6 +8,7 @@
 namespace AccountModule;
 
 
+use Grido\Components\Filters\Filter;
 use Grido\Grid;
 use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 use Nette\Application\UI\Form;
@@ -104,11 +105,15 @@ class InvoicePresenter extends BasePresenter
         $grid = new Grid($this, $name);
         $grid->setModel($this->selectionFactory->table($table)->where('user_id', $this->user->getId()));
 
-        $grid->addColumn('invoice_number', '#');
+        $grid->addColumn('invoice_number', 'Číslo faktúry');
         $grid->addFilter('invoice_number', 'invoice_number');
 
-        $grid->addColumn('client_id', 'ID Klienta');
-        $grid->addFilter('client_id', 'client_id');
+//        $grid->addColumn('client_id', 'ID Klienta');
+//        $grid->addFilter('client_id', 'client_id');
+
+        $clients = $this->getClients();
+        $grid->addColumn('client_id', 'Klient')->setReplacement($clients);
+        $grid->addFilter('client_id', 'Klient', Filter::TYPE_SELECT, $clients);
 
         $grid->addColumn('variable_sign', 'Variabilný symbol');
         $grid->addFilter('variable_sign', 'variable_sign');
@@ -210,5 +215,10 @@ class InvoicePresenter extends BasePresenter
     protected function getRightFormat($date)
     {
         return date('Y-m-d', strtotime($date));
+    }
+
+    private function getClients()
+    {
+        return $this->clientRepository->getClientsForUser($this->user->getId());
     }
 } 
