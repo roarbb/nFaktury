@@ -1,4 +1,10 @@
-{block title}Vkladanie projektu{/block}
+{block title}
+    {if $presenter->action == 'edit'}
+        Úprava projektu
+    {else}
+        Vkladanie projektu
+    {/if}
+{/block}
 
 {block content}
     {control insertEditProjectForm}

@@ -12,3 +12,18 @@ CREATE TABLE `project` (
     ON DELETE CASCADE
 )
   ENGINE =InnoDB;
+
+ALTER TABLE `project`
+ADD COLUMN `created` DATETIME NULL DEFAULT NULL AFTER `user_id`;
+
+CREATE TABLE `task` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `project_id` INT(11) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `description` TEXT NULL,
+  `status` ENUM('waiting','in progress','complete','in review','suspended') NULL DEFAULT 'waiting',
+  `created` DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE=InnoDB;

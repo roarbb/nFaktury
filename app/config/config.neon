@@ -42,12 +42,14 @@ common:
                 - addResource('Account:Client')
                 - addResource('Account:Invoice')
                 - addResource('Account:Project')
+                - addResource('Account:Task')
                 - addResource('Admin:Default')
                 - addResource('Admin:Module')
                 - allow('user', 'Account:Default') # všetky akcie resource Account:Default
                 - allow('user', 'Account:User')
                 - allow('user', 'Account:Invoice')
                 - allow('user', 'Account:Project')
+                - allow('user', 'Account:Task')
                 - allow('admin') # všetky resources a ich akcie
 
     factories:

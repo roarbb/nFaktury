@@ -20,7 +20,7 @@ class ProjectPresenter extends BasePresenter
     private $selectionFactory;
 
     /**
-     * @var ProjectPresenter
+     * @var \ProjectRepository
      */
     private $projectRepository;
 
@@ -28,6 +28,17 @@ class ProjectPresenter extends BasePresenter
     {
         $this->selectionFactory = $selectionFactory;
         $this->projectRepository = $projectRepository;
+    }
+
+    public function actionEdit($id)
+    {
+        $isMineClient = $this->projectRepository->isMineProject($id, $this->user->getId());
+        if (!$isMineClient) {
+            $this->flashMessage('Tento projekt Vám nepatrí.', 'error');
+            $this->redirect(':Account:project:');
+        }
+
+        $this->setView('new');
     }
 
     protected function createComponentGrid($name)
@@ -65,7 +76,7 @@ class ProjectPresenter extends BasePresenter
         $form->setRenderer(new BootstrapRenderer());
 
         $form->addText('name', 'Meno projektu');
-        $form->addText('description', 'Popis');
+        $form->addTextArea('description', 'Popis');
 
         $form->onSuccess[] = $this->projectFormSubmitted;
 
@@ -87,17 +98,17 @@ class ProjectPresenter extends BasePresenter
 
         if ($this->action === 'edit') {
             $projectId = $this->getParameter('id');
-            $this->projectRepository->updateClient($projectId, $data);
+            $this->projectRepository->updateProject($projectId, $data);
 
             $this->flashMessage('Projekt úspešne upravený.', 'success');
             $this->redirect(':Account:project:');
         } else {
             $data->user_id = $this->user->getId();
             $data->created = new \DateTime();
-            $this->clientRepository->insertClient($data);
+            $this->projectRepository->insertProject($data);
 
-            $this->flashMessage('Klient úspešne vytvorený.', 'success');
-            $this->redirect(':Account:client:');
+            $this->flashMessage('Projekt úspešne vytvorený.', 'success');
+            $this->redirect(':Account:project:');
         }
     }
 } 
