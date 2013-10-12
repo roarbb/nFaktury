@@ -7,5 +7,26 @@
 {/block}
 
 {block content}
-{control insertEditInvoiceForm}
+    <div ng-app ng-controller="invoiceForm">
+        {control insertEditInvoiceForm}
+
+        <div n:syntax=off>
+            <h2>Spolu: {{unitCount * unitPrice}} Eur</h2>
+        </div>
+
+    </div>
+{/block}
+
+{block scripts}
+    {if $presenter->action == 'edit'}
+        <script type="text/javascript"
+                src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+        <script type="text/javascript">
+            var invoiceData = {$invoiceData};
+            var invoiceForm = function ($scope) {
+                $scope.unitCount = invoiceData.unit_count;
+                $scope.unitPrice = invoiceData.unit_price;
+            }
+        </script>
+    {/if}
 {/block}

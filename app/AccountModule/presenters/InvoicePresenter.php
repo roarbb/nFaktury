@@ -57,12 +57,14 @@ class InvoicePresenter extends BasePresenter
     public function actionEdit($id)
     {
         $this->setView('new');
+        $invoiceData = $this->invoiceItemsRepository->findBy(array('invoice_id' => $id))->fetch()->toArray();
+        $this->template->invoiceData = $invoiceData;
     }
 
     public function actionShow($id)
     {
         $isMineClient = $this->invoiceRepository->isMine($id, $this->user->getId());
-        if(!$isMineClient) {
+        if (!$isMineClient) {
             $this->flashMessage('Táto faktúra Vám nepatrí.', 'error');
             $this->redirect(':Account:invoice:');
         }
@@ -88,7 +90,7 @@ class InvoicePresenter extends BasePresenter
     public function actionDelete($id)
     {
         $isMineClient = $this->invoiceRepository->isMine($id, $this->user->getId());
-        if(!$isMineClient) {
+        if (!$isMineClient) {
             $this->flashMessage('Táto faktúra Vám nepatrí.', 'error');
             $this->redirect(':Account:invoice:');
         } else {
@@ -99,7 +101,8 @@ class InvoicePresenter extends BasePresenter
         }
     }
 
-    protected function createComponentGrid($name) {
+    protected function createComponentGrid($name)
+    {
 
         $table = 'invoice';
         $grid = new Grid($this, $name);
@@ -160,14 +163,14 @@ class InvoicePresenter extends BasePresenter
         $form->addContainer('item');
         $form['item']->addTextarea('text', 'Popis');
         $form['item']->addSelect('unit', 'Jednotka fakturácie', $units);
-        $form['item']->addText('unit_count', 'Počet jednotiek');
-        $form['item']->addText('unit_price', 'Cena jednotky');
+        $form['item']->addText('unit_count', 'Počet jednotiek')->setAttribute('ng-model', 'unitCount');
+        $form['item']->addText('unit_price', 'Cena jednotky')->setAttribute('ng-model', 'unitPrice');
         $form['item']->addText('vat', 'Daň v %');
         $form['item']->addText('discount_percentage', 'Zľava v %');
 
         $form->onSuccess[] = $this->invoiceFormSubmitted;
 
-        if($this->action === 'edit') {
+        if ($this->action === 'edit') {
             $form->addSubmit('submit', 'Uložiť');
             $invoiceId = $this->getParameter('id');
             $invoiceData = $this->invoiceRepository->fetchById($invoiceId)->toArray();
@@ -188,7 +191,7 @@ class InvoicePresenter extends BasePresenter
         $invoiceItem = $data->item;
         unset($data->item);
 
-        if($this->action === 'edit') {
+        if ($this->action === 'edit') {
             $invoiceId = $this->getParameter('id');
 
             $this->invoiceRepository->updateInvoice($invoiceId, $data);

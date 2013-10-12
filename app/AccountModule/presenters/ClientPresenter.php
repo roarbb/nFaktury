@@ -8,7 +8,6 @@
 namespace AccountModule;
 
 
-use Grido\Components\Filters\Filter;
 use Grido\Grid;
 use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 use Nette\Application\UI\Form;
@@ -26,14 +25,16 @@ class ClientPresenter extends BasePresenter
      */
     private $selectionFactory;
 
-    public function inject(\ClientRepository $clientRepository, SelectionFactory $selectionFactory){
+    public function inject(\ClientRepository $clientRepository, SelectionFactory $selectionFactory)
+    {
         $this->clientRepository = $clientRepository;
         $this->selectionFactory = $selectionFactory;
     }
 
-    public function actionEdit($id) {
+    public function actionEdit($id)
+    {
         $isMineClient = $this->clientRepository->isMineClient($id, $this->user->getId());
-        if(!$isMineClient) {
+        if (!$isMineClient) {
             $this->flashMessage('Tento klient Vám nepatrí.', 'error');
             $this->redirect(':Account:client:');
         }
@@ -42,7 +43,7 @@ class ClientPresenter extends BasePresenter
     public function actionDelete($id)
     {
         $isMineClient = $this->clientRepository->isMineClient($id, $this->user->getId());
-        if(!$isMineClient) {
+        if (!$isMineClient) {
             $this->flashMessage('Tento klient Vám nepatrí.', 'error');
             $this->redirect(':Account:client:');
         } else {
@@ -53,7 +54,8 @@ class ClientPresenter extends BasePresenter
         }
     }
 
-    protected function createComponentGrid($name) {
+    protected function createComponentGrid($name)
+    {
 
         $table = 'client';
         $grid = new Grid($this, $name);
@@ -110,7 +112,7 @@ class ClientPresenter extends BasePresenter
 
         $form->onSuccess[] = $this->clientFormSubmitted;
 
-        if($this->action === 'edit') {
+        if ($this->action === 'edit') {
             $form->addSubmit('submit', 'Uložiť');
             $clientId = $this->getParameter('id');
             $clientData = $this->clientRepository->fetchById($clientId);
@@ -126,7 +128,7 @@ class ClientPresenter extends BasePresenter
     {
         $data = $form->getValues();
 
-        if($this->action === 'edit') {
+        if ($this->action === 'edit') {
             $clientId = $this->getParameter('id');
             $this->clientRepository->updateClient($clientId, $data);
 

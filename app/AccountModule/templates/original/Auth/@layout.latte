@@ -1,75 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<!--[if IE 8]>
+<html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]>
+<html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en"> <!--<![endif]-->
+<!-- BEGIN HEAD -->
 <head>
-    <meta charset="utf-8">
-    <title>Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Matej Sajgal">
-    <meta name="robots" content="{$robots}" n:ifset="$robots">
-
-
-    <link href="{$basePath}/www/css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-        body {
-            padding-top: 40px;
-            padding-bottom: 40px;
-            background-color: #f5f5f5;
-        }
-
-        .form-signin {
-            max-width: 300px;
-            padding: 19px 29px 29px;
-            margin: 0 auto 20px;
-            background-color: #fff;
-            border: 1px solid #e5e5e5;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-            -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-            box-shadow: 0 1px 2px rgba(0,0,0,.05);
-        }
-        .form-signin .form-signin-heading,
-        .form-signin .checkbox {
-            margin-bottom: 10px;
-        }
-        .form-signin input[type="text"],
-        .form-signin input[type="password"] {
-            font-size: 16px;
-            height: auto;
-            margin-bottom: 15px;
-            padding: 7px 9px;
-        }
-        .alert {
-            display: block;
-            margin-top: 10px;
-        }
-
-    </style>
-    <link href="{$basePath}/www/css/bootstrap-responsive.min.css" rel="stylesheet">
-
-    {* HTML5 shim, for IE6-8 support of HTML5 elements *}
-    <!--[if lt IE 9]>
-    <script src="{$basePath}/www/js/html5shiv.js"></script>
-    <![endif]-->
-
-    {* Fav and touch icons *}
-    <link rel="shortcut icon" href="{$basePath}/www/favicon.ico">
+    <meta charset="utf-8"/>
+    <title>Prihlásenie | Faktúry</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="Matej Sajgal" name="author"/>
+    <link href="{$basePath}/www/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="{$basePath}/www/assets/css/metro.css" rel="stylesheet"/>
+    <link href="{$basePath}/www/assets/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <link href="{$basePath}/www/assets/css/style.css" rel="stylesheet"/>
+    <link href="{$basePath}/www/assets/css/style_responsive.css" rel="stylesheet"/>
+    <link href="{$basePath}/www/assets/css/style_default.css" rel="stylesheet" id="style_color"/>
+    <link rel="stylesheet" type="text/css" href="{$basePath}/www/assets/uniform/css/uniform.default.css"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
 </head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="login">
+<!-- BEGIN LOGO -->
+<div class="logo">
+    <img src="{$basePath}/www/assets/img/logo-big.png" alt=""/>
+</div>
+<!-- END LOGO -->
 
-<body>
+{include #content}
 
-<div class="container">
-    {include #content}
-</div> <!-- /container -->
-
-{* Le javascript ================================================== *}
-{* Placed at the end of the document so the pages load faster *}
-<script src="{$basePath}/www/js/jquery.min.js"></script>
-<script src="{$basePath}/www/js/bootstrap.min.js"></script>
-<script src="{$basePath}/www/js/live-form-validation.js"></script>
-
-
+<!-- BEGIN COPYRIGHT -->
+<div class="copyright">
+    {date('Y')} &copy; Matej Šajgal &middot; Faktúry
+</div>
+<!-- END COPYRIGHT -->
+<!-- BEGIN JAVASCRIPTS -->
+<script src="{$basePath}/www/assets/js/jquery-1.8.3.min.js"></script>
+<script src="{$basePath}/www/assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="{$basePath}/www/assets/uniform/jquery.uniform.min.js"></script>
+<script src="{$basePath}/www/assets/js/jquery.blockui.js"></script>
+<script type="text/javascript" src="{$basePath}/www/assets/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="{$basePath}/www/assets/js/app.js"></script>
+<script>
+    jQuery(document).ready(function () {
+        App.initLogin();
+    });
+</script>
+<!-- END JAVASCRIPTS -->
 </body>
+<!-- END BODY -->
 </html>

@@ -29,6 +29,7 @@ common:
         generalListingRepository: General_moduleRepository
         invoiceRepository: InvoiceRepository
         invoiceItemsRepository: Invoice_itemsRepository
+        projectRepository: ProjectRepository
 
         authorizator:
             class: Nette\Security\Permission
@@ -40,11 +41,13 @@ common:
                 - addResource('Account:User')
                 - addResource('Account:Client')
                 - addResource('Account:Invoice')
+                - addResource('Account:Project')
                 - addResource('Admin:Default')
                 - addResource('Admin:Module')
                 - allow('user', 'Account:Default') # všetky akcie resource Account:Default
                 - allow('user', 'Account:User')
                 - allow('user', 'Account:Invoice')
+                - allow('user', 'Account:Project')
                 - allow('admin') # všetky resources a ich akcie
 
     factories:
