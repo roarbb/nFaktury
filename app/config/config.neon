@@ -30,6 +30,8 @@ common:
         invoiceRepository: InvoiceRepository
         invoiceItemsRepository: Invoice_itemsRepository
         projectRepository: ProjectRepository
+        taskRepository: TaskRepository
+        taskStatusRepository: Task_statusRepository
 
         authorizator:
             class: Nette\Security\Permission

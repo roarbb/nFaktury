@@ -27,3 +27,25 @@ CREATE TABLE `task` (
   PRIMARY KEY (`id`)
 )
   ENGINE=InnoDB;
+
+ALTER TABLE `task`
+ADD CONSTRAINT `FK_task_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+ADD CONSTRAINT `FK_task_project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE ON DELETE CASCADE;
+
+CREATE TABLE `task_status` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `active` TINYINT(4) NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+)
+  ENGINE=InnoDB;
+
+ALTER TABLE `task`
+CHANGE COLUMN `status` `status_id` INT(11) NOT NULL AFTER `description`,
+ADD CONSTRAINT `FK_task_task_status` FOREIGN KEY (`status_id`) REFERENCES `task_status` (`id`) ON UPDATE CASCADE ON DELETE CASCADE;
+
+INSERT INTO `faktury`.`task_status` (`name`) VALUES ('waiting');
+INSERT INTO `faktury`.`task_status` (`name`) VALUES ('in progress');
+INSERT INTO `faktury`.`task_status` (`name`) VALUES ('complete');
+INSERT INTO `faktury`.`task_status` (`name`) VALUES ('in review');
+INSERT INTO `faktury`.`task_status` (`name`) VALUES ('suspended');

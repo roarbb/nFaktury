@@ -66,7 +66,7 @@ class ProjectPresenter extends BasePresenter
     }
 
     /**
-     * Uprava / vkladanie klienta
+     * Uprava / vkladanie projektu
      *
      * @return Form
      */

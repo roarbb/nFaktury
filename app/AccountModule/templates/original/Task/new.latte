@@ -1,0 +1,11 @@
+{block title}
+    {if $presenter->action == 'edit'}
+        Úprava tasku
+    {else}
+        Vkladanie tasku
+    {/if}
+{/block}
+
+{block content}
+    {control insertEditTaskForm}
+{/block}
