@@ -127,16 +127,16 @@ class TaskPresenter extends BasePresenter
         $form = new Form();
         $form->setRenderer(new BootstrapRenderer());
 
-        $form->addText('name', 'Názov tasku');
+        $form->addText('name', 'Názov tasku')->setAttribute('class', 'input-xlarge');
         $form->addSelect('project_id', 'Projekt', $projects);
         $form->addSelect('status_id', 'Status', $statuses);
-        $form->addTextArea('description', 'Popis');
+        $form->addTextArea('description', 'Popis')->setAttribute('class', 'editor input-block-level');
 
 
         $form->onSuccess[] = $this->taskFormSubmitted;
 
         if ($this->action === 'edit') {
-            $form->addSubmit('submit', 'Uložiť');
+            $form->addSubmit('submit', 'Uložiť')->setAttribute('class', 'btn btn-primary');
             $taskId = $this->getParameter('id');
             $taskData = $this->taskRepository->fetchById($taskId);
             $form->setDefaults($taskData);

@@ -1,3 +1,26 @@
 body {
     padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
 }
+
+#frm-insertEditTaskForm label {
+    padding-right: 10px;
+}
+
+#frm-insertEditTaskForm input,
+#frm-insertEditTaskForm select {
+    margin-right: 15px;
+}
+
+#frm-insertEditTaskForm .inline {
+    padding: 10px 15px;
+    background-color: #F5F5F5;
+}
+
+#frm-insertEditTaskForm .textarea {
+    margin-top: 20px;
+}
+
+#frm-insertEditTaskForm .textarea textarea {
+    height: 200px;
+    resize: vertical !important;
+}

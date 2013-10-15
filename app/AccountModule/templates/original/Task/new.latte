@@ -6,6 +6,44 @@
     {/if}
 {/block}
 
+{block head}
+    <link rel="stylesheet" type="text/css" href="{$basePath}/www/css/wysiwyg-color.css" />
+    <link rel="stylesheet" type="text/css" href="{$basePath}/www/css/prettify.css" />
+    <link rel="stylesheet" href="{$basePath}/www/css/bootstrap-wysihtml5.css" />
+{/block}
+
 {block content}
-    {control insertEditTaskForm}
+    {form insertEditTaskForm class=>form-inline}
+        <ul class="errors" n:if="$form->hasErrors()">
+            <li n:foreach="$form->errors as $error">{$error}</li>
+        </ul>
+
+        <div class="inline">
+            {label name /}{input name} {label project_id /}{input project_id} {label status_id /}{input status_id}
+        </div>
+
+        <div class="textarea">
+            {*{label description /}*}
+            {input description}
+        </div>
+
+        <div class="form-actions">
+            {input submit}
+        </div>
+
+    {/form}
+{/block}
+
+{block scripts}
+    <script src="{$basePath}/www/js/wysihtml5-0.3.0.min.js"></script>
+    <script src="{$basePath}/www/js/prettify.js"></script>
+    <script src="{$basePath}/www/js/bootstrap.min.js"></script>
+    <script src="{$basePath}/www/js/bootstrap-wysihtml5.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.editor').wysihtml5();
+            $(prettyPrint);
+        });
+    </script>
 {/block}
