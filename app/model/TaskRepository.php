@@ -35,8 +35,13 @@ class TaskRepository extends Repository
         return $this->getTable()->insert($data);
     }
 
-    public function deleteTask($taskId)
+    public function deleteTask($taskId, $userId)
     {
-        $this->fetchById($taskId)->delete();
+        if($this->isMineTask($taskId, $userId)) {
+            $this->fetchById($taskId)->delete();
+            return true;
+        } else {
+            return false;
+        }
     }
 } 

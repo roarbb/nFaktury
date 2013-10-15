@@ -84,6 +84,16 @@ class TaskPresenter extends BasePresenter
         $this->setView('new');
     }
 
+    public function renderDelete($id) {
+        $result = $this->taskRepository->deleteTask($id, $this->user->getId());
+        if($result) {
+            $this->presenter->flashMessage('Task vymazaný', 'success');
+        } else {
+            $this->presenter->flashMessage('Task nebol vymazaný', 'danger');
+        }
+        $this->presenter->redirect(':account:task:');
+    }
+
     protected function createComponentGrid($name)
     {
         $table = 'task';
@@ -130,6 +140,7 @@ class TaskPresenter extends BasePresenter
         $form->addText('name', 'Názov tasku')->setAttribute('class', 'input-xlarge');
         $form->addSelect('project_id', 'Projekt', $projects);
         $form->addSelect('status_id', 'Status', $statuses);
+        $form->addTextArea('description', 'Popis')->setAttribute('class', 'editor input-block-level');
         $form->addTextArea('description', 'Popis')->setAttribute('class', 'editor input-block-level');
 
 
