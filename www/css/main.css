@@ -24,3 +24,7 @@ body {
     height: 200px;
     resize: vertical !important;
 }
+
+.grid-description {
+    width: 150px !important;
+}

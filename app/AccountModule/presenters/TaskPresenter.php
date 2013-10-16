@@ -101,14 +101,21 @@ class TaskPresenter extends BasePresenter
 
         $grid->setModel($this->selectionFactory->table($table)->where('user_id', $this->user->getId()));
 
+//        $grid->getRowPrototype()
+
         $grid->addColumn('id', '#');
         $grid->addFilter('id', 'id');
 
         $grid->addColumn('name', 'Task');
         $grid->addFilter('name', 'name');
 
-        $grid->addColumn('description', 'Popis');
+//        $descriptionClassName = 'grid-description';
+        $grid->addColumn('description', 'Popis')->setTruncate(100);
+//        $grid->getColumn('description')->getCellPrototype()->addAttributes(array('class' => $descriptionClassName));
+//        $grid->getColumn('description')->getHeaderPrototype()->addAttributes(array('class' => $descriptionClassName));
+
         $grid->addFilter('description', 'description');
+//        $grid->getFilter('description')->getWrapperPrototype()->addAttributes(array('class' => $descriptionClassName));
 
         $grid->addColumn('status_id', 'Status')->setReplacement($this->statuses);
         $grid->addFilter('status_id', 'status_id', Filter::TYPE_SELECT, $this->statuses);
@@ -141,8 +148,6 @@ class TaskPresenter extends BasePresenter
         $form->addSelect('project_id', 'Projekt', $projects);
         $form->addSelect('status_id', 'Status', $statuses);
         $form->addTextArea('description', 'Popis')->setAttribute('class', 'editor input-block-level');
-        $form->addTextArea('description', 'Popis')->setAttribute('class', 'editor input-block-level');
-
 
         $form->onSuccess[] = $this->taskFormSubmitted;
 
@@ -152,7 +157,7 @@ class TaskPresenter extends BasePresenter
             $taskData = $this->taskRepository->fetchById($taskId);
             $form->setDefaults($taskData);
         } else {
-            $form->addSubmit('submit', 'Vložiť');
+            $form->addSubmit('submit', 'Vložiť')->setAttribute('class', 'btn btn-primary');
         }
 
         return $form;
