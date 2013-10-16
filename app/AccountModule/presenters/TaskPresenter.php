@@ -94,6 +94,10 @@ class TaskPresenter extends BasePresenter
         $this->presenter->redirect(':account:task:');
     }
 
+    public function renderShare() {
+
+    }
+
     protected function createComponentGrid($name)
     {
         $table = 'task';
@@ -181,5 +185,30 @@ class TaskPresenter extends BasePresenter
             $this->flashMessage('Task úspešne vytvorený.', 'success');
             $this->redirect(':Account:task:');
         }
+    }
+
+    protected function createComponentShareGrid($name)
+    {
+        $table = 'task_share';
+        $grid = new Grid($this, $name);
+
+        $grid->setModel($this->selectionFactory->table($table)->where('user_id', $this->user->getId()));
+
+
+        $grid->addColumn('id', '#');
+        $grid->addFilter('id', 'id');
+
+        $grid->addColumn('email', 'Email');
+        $grid->addFilter('email', 'email');
+
+        $grid->addColumn('edit', 'Právo vkladať / editovať tasky');
+        $grid->addFilter('edit', 'edit');
+
+        $grid->addAction('edit', 'Upraviť')->setIcon('pencil');
+        $grid->addAction('delete', 'Vymazať')
+            ->setIcon('trash')
+            ->setConfirm('Naozaj chcete vymazať tento projekt?');
+
+        $grid->setExporting($table);
     }
 } 

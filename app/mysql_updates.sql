@@ -49,3 +49,28 @@ INSERT INTO `faktury`.`task_status` (`name`) VALUES ('in progress');
 INSERT INTO `faktury`.`task_status` (`name`) VALUES ('complete');
 INSERT INTO `faktury`.`task_status` (`name`) VALUES ('in review');
 INSERT INTO `faktury`.`task_status` (`name`) VALUES ('suspended');
+
+
+#----------------------- 16.10.2013 ----------------------------------
+CREATE TABLE `task_share` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `edit` TINYINT(4) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK_task_share_user` (`user_id`),
+  CONSTRAINT `FK_task_share_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+  ENGINE=InnoDB;
+
+CREATE TABLE `task_share_project` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `task_share_id` INT(11) NOT NULL,
+  `project_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK__task_share` (`task_share_id`),
+  INDEX `FK__project` (`project_id`),
+  CONSTRAINT `FK__task_share` FOREIGN KEY (`task_share_id`) REFERENCES `task_share` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `FK__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+  ENGINE=InnoDB;
