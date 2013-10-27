@@ -32,6 +32,10 @@ common:
         projectRepository: ProjectRepository
         taskRepository: TaskRepository
         taskStatusRepository: Task_statusRepository
+        timesheetRepository: TimesheetRepository
+
+        #forms
+        InsertEditTimeFactory: InsertEditTimeFactory
 
         authorizator:
             class: Nette\Security\Permission
@@ -45,6 +49,7 @@ common:
                 - addResource('Account:Invoice')
                 - addResource('Account:Project')
                 - addResource('Account:Task')
+                - addResource('Account:Time')
                 - addResource('Admin:Default')
                 - addResource('Admin:Module')
                 - allow('user', 'Account:Default') # všetky akcie resource Account:Default
