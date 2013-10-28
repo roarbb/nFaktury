@@ -2,6 +2,58 @@
 
 {block content}
     <div id="content">
-        {control insertEditTimeForm}
+        <div n:foreach="$flashes as $flash" class="alert alert-{$flash->type}">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {$flash->message}
+        </div>
+
+        {*{control insertEditTimeForm}*}
+
+        {form insertEditTimeForm}
+
+            <div id="from" class="input-append">
+                {label project_id /}
+                {input project_id}
+            </div>
+
+            <div id="from" class="input-append">
+                {label description /}
+                {input description}
+            </div>
+
+            <div id="from" class="input-append">
+                {label from /}
+                {input from}
+                <span class="add-on">
+                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                </span>
+            </div>
+
+            <div id="to" class="input-append">
+                {label to /}
+                {input to}
+                <span class="add-on">
+                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                </span>
+            </div>
+
+            {input submit}
+        {/form}
     </div>
+{/block}
+
+{block head}
+    <link rel="stylesheet" href="{$basePath}/www/css/bootstrap-datetimepicker.min.css"/>
+{/block}
+
+{block scripts}
+    <script src="{$basePath}/www/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="{$basePath}/www/js/netteForms.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#from, #to').datetimepicker({
+                pickDate: false
+            });
+        });
+    </script>
 {/block}

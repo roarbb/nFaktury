@@ -75,17 +75,23 @@ CREATE TABLE `task_share_project` (
 )
   ENGINE=InnoDB;
 
-#----------------------- 27.10.2013 ----------------------------------
+#----------------------- 29.10.2013 ----------------------------------
 CREATE TABLE `timesheet` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
   `project_id` INT(11) NOT NULL,
-  `description` TEXT NULL DEFAULT NULL,
-  `duration` INT(11) NOT NULL COMMENT 'duration in seconds',
+  `description` TEXT NULL,
+  `from` DATETIME NULL DEFAULT NULL,
+  `to` DATETIME NULL DEFAULT NULL,
+  `created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_update` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `FK_timesheet_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT `FK_timesheet_project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+  INDEX `FK_timesheet_user` (`user_id`),
+  INDEX `FK_timesheet_project` (`project_id`),
+  CONSTRAINT `FK_timesheet_project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `FK_timesheet_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 )
   COLLATE='utf8_general_ci'
   ENGINE=InnoDB;
+
 
