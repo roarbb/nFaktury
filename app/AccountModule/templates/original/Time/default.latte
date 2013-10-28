@@ -2,13 +2,6 @@
 
 {block content}
     <div id="content">
-        <div n:foreach="$flashes as $flash" class="alert alert-{$flash->type}">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            {$flash->message}
-        </div>
-
-        {*{control insertEditTimeForm}*}
-
         {form insertEditTimeForm}
 
             <div id="from" class="input-append">
