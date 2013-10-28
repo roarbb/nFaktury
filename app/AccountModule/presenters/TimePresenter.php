@@ -14,10 +14,6 @@ use Nette\Application\UI\Form;
 class TimePresenter extends BasePresenter
 {
     /**
-     * @var \InsertEditTimeFactory
-     */
-    private $timeFactory;
-    /**
      * @var \TimesheetRepository
      */
     private $timesheetRepository;
@@ -32,13 +28,11 @@ class TimePresenter extends BasePresenter
 
     public function injectDefault(
         \TimesheetRepository $timesheetRepository,
-        \ProjectRepository $projectRepository,
-        \InsertEditTimeFactory $timeFactory
+        \ProjectRepository $projectRepository
     )
     {
         $this->timesheetRepository = $timesheetRepository;
         $this->projectRepository = $projectRepository;
-        $this->timeFactory = $timeFactory;
     }
 
     public function startup()
@@ -49,7 +43,7 @@ class TimePresenter extends BasePresenter
         $this->projects = $this->projectRepository->getProjectsForUser($this->user->getId());
     }
 
-    protected function createComponentInsertEditTimeFormm($name, $id)
+    protected function createComponentInsertEditTimeForm()
     {
         $projects = $this->projects;
 
@@ -77,7 +71,7 @@ class TimePresenter extends BasePresenter
         return $form;
     }
 
-    protected function createComponentInsertEditTimeForm() {
-        $this->timeFactory->createForm($this->user->getId());
+    public function projectFormSubmitted() {
+
     }
 }

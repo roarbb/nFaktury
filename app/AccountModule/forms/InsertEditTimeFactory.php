@@ -8,8 +8,10 @@
 use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 use Nette\Application\UI\Form;
 
-class InsertEditTimeFactory extends \Nette\Object
+class InsertEditTimeFactory extends Nette\Object
 {
+    private $projects;
+
     public function createForm($userId)
     {
         $projects = $this->projects;
@@ -24,18 +26,18 @@ class InsertEditTimeFactory extends \Nette\Object
         $form->addText('hours', 'Trvanie (hodiny)');
         $form->addText('minutes', 'Trvanie (minuty)');
 
-        if ($this->action === 'edit') {
-
-            $form->addSubmit('submit', 'Uložiť')
-                ->onClick[] = $this->process;
-
-//            $projectId = $this->getParameter('id');
-            $projectData = $this->projectRepository->fetchById($projectId);
-            $form->setDefaults($projectData);
-        } else {
-            $form->addSubmit('submit', 'Vložiť')
-                ->onClick[] = $this->process;
-        }
+//        if ($form->getPresenter()->action === 'edit') {
+//
+//            $form->addSubmit('submit', 'Uložiť')
+//                ->onClick[] = $this->process;
+//
+////            $projectId = $this->getParameter('id');
+//            $projectData = $this->projectRepository->fetchById($projectId);
+//            $form->setDefaults($projectData);
+//        } else {
+//            $form->addSubmit('submit', 'Vložiť')
+//                ->onClick[] = $this->process;
+//        }
 
         return $form;
     }
