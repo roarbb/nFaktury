@@ -4,6 +4,10 @@
     <div id="content">
         {form insertEditTimeForm}
 
+            <div n:inner-if="$form->hasErrors()">
+                <div class="alert alert-error" n:foreach="$form->errors as $error">{$error}</div>
+            </div>
+
             <div id="from" class="input-append">
                 {label project_id /}
                 {input project_id}

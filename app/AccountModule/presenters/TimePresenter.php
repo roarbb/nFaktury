@@ -44,6 +44,14 @@ class TimePresenter extends BasePresenter
         $this->projects = $this->projectRepository->getProjectsForUser($this->user->getId());
     }
 
+    public function actionDefault($id)
+    {
+        if($id && !$this->timesheetRepository->isMineTimesheet($id, $this->user->getId())) {
+            $this->flashMessage('Záznam neexistuje.', 'danger');
+            $this->redirect(':Account:time:');
+        }
+    }
+
     protected function createComponentInsertEditTimeForm()
     {
         $projects = $this->projects;
@@ -66,16 +74,19 @@ class TimePresenter extends BasePresenter
 
         if ($timeRowId) {
             $form->addSubmit('submit', 'Uložiť');
-//            $projectId = $this->getParameter('id');
-//            $projectData = $this->projectRepository->fetchById($projectId);
-//            $form->setDefaults($projectData);
+            $timesheetData = $this->timesheetRepository->fetchById($timeRowId);
+            if($timesheetData) {
+                $form->setDefaults($timesheetData);
+                $form['to']->setDefaultValue($timesheetData->to->format('h:i'));
+                $form['from']->setDefaultValue($timesheetData->from->format('h:i'));
+            } else {
+                $form->addError('Záznam neexistuje.');
+            }
         } else {
             $form->addSubmit('submit', 'Vložiť');
         }
 
         $form['submit']->setAttribute('class', 'btn btn-primary');
-
-
 
         return $form;
     }
@@ -83,14 +94,20 @@ class TimePresenter extends BasePresenter
     public function timeFormSubmitted(Form $form)
     {
         $values = $form->getValues();
+        $today = date('Y-m-d');
         $row_id = $values->row_id;
         unset($values->row_id);
 
         $values->user_id = $this->user->getId();
         $values->last_update = new DateTime();
+        $values->from = $today . ' ' . $values->from;
+        $values->to = $today . ' ' . $values->to;
 
         if(!empty($row_id)) {
             //update
+            $this->timesheetRepository->updateTimeRow($row_id, $this->user->getId(), $values);
+            $this->flashMessage('Záznam úspešne upravený.', 'success');
+            $this->redirect(':Account:time:');
         } else {
             //insert
             $this->timesheetRepository->insertTimeRow($values);
