@@ -44,10 +44,15 @@
                     | {$projects[$timeSheet->project_id]}
                     | {$timeSheet->from->format('H:i')} - {$timeSheet->to->format('H:i')}
                     <a n:href=":Account:time: $timeSheet->id" class="btn btn-small btn-primary">Upraviť</a>
-                    <a n:href="!delete $timeSheet->id" class="btn btn-small btn-danger">Zmazať</a>
+                    <a n:href="delete! $timeSheet->id" class="btn btn-small btn-danger">Zmazať</a>
                 </div>
             {/foreach}
         {/if}
+
+        <div>
+            <br/>
+            Dnes si už odpracoval: {$todayWorktime['hours']} hodín {$todayWorktime['minutes']} minút
+        </div>
 
     </div>
 {/block}

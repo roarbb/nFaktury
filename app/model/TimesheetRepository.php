@@ -19,11 +19,11 @@ class TimesheetRepository extends Repository
         $this->findBy(array('id' => $rowId, 'user_id' => $userId))->update($data);
     }
 
-    public function isMineTimesheet($timesheetId, $userId)
+    public function isMineAndTodayTimesheet($timesheetId, $userId)
     {
-        $owner = $this->fetchById($timesheetId);
+        $timesheet = $this->fetchById($timesheetId);
 
-        if ($owner !== FALSE && $owner->user_id == $userId) {
+        if ($timesheet !== FALSE && $timesheet->user_id == $userId && $timesheet->from->format('d.m.Y') == date('d.m.Y') ) {
             return true;
         } else {
             return false;
@@ -43,5 +43,38 @@ class TimesheetRepository extends Repository
             ->order('from')
             ->fetchAll();
 
+    }
+
+    public function deleteTimeSheet($timesheetId, $userId)
+    {
+        $this->findBy(array('user_id' => $userId, 'id' => $timesheetId))->delete();
+    }
+
+    public function getTodayWorkHours($user_id)
+    {
+        $sumHours = 0;
+        $sumMinutes = 0;
+        $out = array();
+
+        $timesheets = $this->getTable()
+            ->where('? = ?', new SqlLiteral('DATE_FORMAT(NOW(), "%Y-%m-%d")'), new SqlLiteral('DATE_FORMAT(`from`,"%Y-%m-%d")'))
+            ->where('user_id', $user_id)
+            ->fetchAll();
+
+        if(!$timesheets) {
+            return false;
+        }
+
+        foreach($timesheets as $timesheet) {
+            $diff = $timesheet->to->diff($timesheet->from);
+            $sumHours += (int)$diff->format('%h');
+            $sumMinutes += (int)$diff->format('%i');
+        }
+
+        $restHours = $sumMinutes/60;
+        $out['hours'] = (int)$restHours + (int)$sumHours;
+        $out['minutes'] = (int)$sumMinutes%60;
+
+        return $out;
     }
 }

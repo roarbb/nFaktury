@@ -46,7 +46,8 @@ class TimePresenter extends BasePresenter
 
     public function actionDefault($id)
     {
-        if($id && !$this->timesheetRepository->isMineTimesheet($id, $this->user->getId())) {
+        $isMine = $this->timesheetRepository->isMineAndTodayTimesheet($id, $this->user->getId());
+        if($id && !$isMine) {
             $this->flashMessage('Záznam neexistuje.', 'danger');
             $this->redirect(':Account:time:');
         }
@@ -54,8 +55,9 @@ class TimePresenter extends BasePresenter
 
     public function handleDelete($id)
     {
-        dump($id);
-        exit;
+        $this->timesheetRepository->deleteTimeSheet($id, $this->user->getId());
+        $this->flashMessage('Záznam úspešne zmazaný.', 'success');
+        $this->redirect(':Account:time:');
     }
 
     public function renderDefault()
@@ -63,6 +65,7 @@ class TimePresenter extends BasePresenter
         $todaysTimesheets = $this->timesheetRepository->getTodaysTimesheets($this->user->getId());
         $this->template->todaysTimesheets = $todaysTimesheets;
         $this->template->projects = $this->projects;
+        $this->template->todayWorktime = $this->timesheetRepository->getTodayWorkHours($this->user->getId());
     }
 
     protected function createComponentInsertEditTimeForm()
