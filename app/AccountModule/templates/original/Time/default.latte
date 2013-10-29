@@ -36,6 +36,19 @@
 
             {input submit}
         {/form}
+
+        {if $todaysTimesheets}
+            {foreach $todaysTimesheets as $timeSheet}
+                <div>
+                    {$timeSheet->description}
+                    | {$projects[$timeSheet->project_id]}
+                    | {$timeSheet->from->format('H:i')} - {$timeSheet->to->format('H:i')}
+                    <a n:href=":Account:time: $timeSheet->id" class="btn btn-small btn-primary">Upraviť</a>
+                    <a n:href="!delete $timeSheet->id" class="btn btn-small btn-danger">Zmazať</a>
+                </div>
+            {/foreach}
+        {/if}
+
     </div>
 {/block}
 

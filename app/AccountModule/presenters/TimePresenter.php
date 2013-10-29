@@ -52,6 +52,19 @@ class TimePresenter extends BasePresenter
         }
     }
 
+    public function handleDelete($id)
+    {
+        dump($id);
+        exit;
+    }
+
+    public function renderDefault()
+    {
+        $todaysTimesheets = $this->timesheetRepository->getTodaysTimesheets($this->user->getId());
+        $this->template->todaysTimesheets = $todaysTimesheets;
+        $this->template->projects = $this->projects;
+    }
+
     protected function createComponentInsertEditTimeForm()
     {
         $projects = $this->projects;

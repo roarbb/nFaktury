@@ -1,4 +1,6 @@
 <?php
+use Nette\Database\SqlLiteral;
+
 /**
  * Projet: faktury
  * Author: Matej Sajgal
@@ -26,5 +28,20 @@ class TimesheetRepository extends Repository
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param $user_id
+     *
+     * @return array|IRow[]
+     */
+    public function getTodaysTimesheets($user_id)
+    {
+        return $this->getTable()
+            ->where('user_id', $user_id)
+            ->where('? = ?', new SqlLiteral('DATE_FORMAT(NOW(), "%Y-%m-%d")'), new SqlLiteral('DATE_FORMAT(`from`,"%Y-%m-%d")'))
+            ->order('from')
+            ->fetchAll();
+
     }
 }
