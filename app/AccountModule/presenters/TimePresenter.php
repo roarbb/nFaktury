@@ -93,8 +93,8 @@ class TimePresenter extends BasePresenter
             $timesheetData = $this->timesheetRepository->fetchById($timeRowId);
             if($timesheetData) {
                 $form->setDefaults($timesheetData);
-                $form['to']->setDefaultValue($timesheetData->to->format('h:i'));
-                $form['from']->setDefaultValue($timesheetData->from->format('h:i'));
+                $form['to']->setDefaultValue($timesheetData->to->format('H:i'));
+                $form['from']->setDefaultValue($timesheetData->from->format('H:i'));
             } else {
                 $form->addError('Záznam neexistuje.');
             }
@@ -102,7 +102,7 @@ class TimePresenter extends BasePresenter
             $form->addSubmit('submit', 'Vložiť');
         }
 
-        $form['submit']->setAttribute('class', 'btn btn-primary');
+        $form['submit']->setAttribute('class', 'btn btn-success');
 
         return $form;
     }

@@ -40,8 +40,8 @@
         {if $todaysTimesheets}
             {foreach $todaysTimesheets as $timeSheet}
                 <div>
-                    {$timeSheet->description}
-                    | {$projects[$timeSheet->project_id]}
+                    {$projects[$timeSheet->project_id]}
+                    | {$timeSheet->description}
                     | {$timeSheet->from->format('H:i')} - {$timeSheet->to->format('H:i')}
                     <a n:href=":Account:time: $timeSheet->id" class="btn btn-small btn-primary">Upraviť</a>
                     <a n:href="delete! $timeSheet->id" class="btn btn-small btn-danger">Zmazať</a>
@@ -49,9 +49,12 @@
             {/foreach}
         {/if}
 
+        <br/>
+        <hr/>
+        <br/>
+
         <div>
-            <br/>
-            Dnes si už odpracoval: {$todayWorktime['hours']} hodín {$todayWorktime['minutes']} minút
+            Dnes si už odpracoval: <span class="well">{$todayWorktime['hours']} hod. {$todayWorktime['minutes']} min.</span>
         </div>
 
     </div>

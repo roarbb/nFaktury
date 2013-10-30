@@ -62,7 +62,9 @@ class TimesheetRepository extends Repository
             ->fetchAll();
 
         if(!$timesheets) {
-            return false;
+            $out['hours'] = 0;
+            $out['minutes'] = 0;
+            return $out;
         }
 
         foreach($timesheets as $timesheet) {
