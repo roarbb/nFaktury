@@ -57,6 +57,7 @@ common:
                 - allow('user', 'Account:Invoice')
                 - allow('user', 'Account:Project')
                 - allow('user', 'Account:Task')
+                - allow('user', 'Account:Time')
                 - allow('admin') # všetky resources a ich akcie
 
     factories:
