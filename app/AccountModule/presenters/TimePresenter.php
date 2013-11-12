@@ -26,14 +26,20 @@ class TimePresenter extends BasePresenter
     private $year;
     private $month;
     private $projects;
+    /**
+     * @var \Timesheet_dataRepository
+     */
+    private $timesheetDataRepository;
 
     public function injectDefault(
         \TimesheetRepository $timesheetRepository,
-        \ProjectRepository $projectRepository
+        \ProjectRepository $projectRepository,
+        \Timesheet_dataRepository $timesheetDataRepository
     )
     {
         $this->timesheetRepository = $timesheetRepository;
         $this->projectRepository = $projectRepository;
+        $this->timesheetDataRepository = $timesheetDataRepository;
     }
 
     public function startup()
@@ -62,10 +68,20 @@ class TimePresenter extends BasePresenter
 
     public function renderDefault()
     {
+        $lunchTime = $this->timesheetDataRepository->getLunchTime($this->user->getId(), date('Y-m-d'));
+        if($lunchTime) {
+            $lunchInMinutes = $lunchTime->lunch_in_minutes;
+        } else {
+            $lunchInMinutes = 0;
+        }
+
         $todaysTimesheets = $this->timesheetRepository->getTodaysTimesheets($this->user->getId());
         $this->template->todaysTimesheets = $todaysTimesheets;
         $this->template->projects = $this->projects;
-        $this->template->todayWorktime = $this->timesheetRepository->getTodayWorkHours($this->user->getId());
+        $this->template->todayWorktime = $this->timesheetRepository->getTodayWorkHours(
+            $this->user->getId(),
+            $lunchInMinutes
+        );
     }
 
     protected function createComponentInsertEditTimeForm()
@@ -130,5 +146,32 @@ class TimePresenter extends BasePresenter
             $this->flashMessage('Záznam úspešne vložený.', 'success');
             $this->redirect(':Account:time:');
         }
+    }
+
+    protected function createComponentInsertEditLunchTimeForm()
+    {
+        $form = new Form();
+        $form->addText('hours', 'Hodiny');
+        $form->addText('minutes', 'Minuty');
+        $form->onSuccess[] = $this->lunchTimeFormSubmitted;
+        $form->addSubmit('submit', 'Uložiť')->setAttribute('class', 'btn btn-success');
+
+        $lunchTime = $this->timesheetDataRepository->getLunchTime($this->user->getId(), date('Y-m-d'));
+        if($lunchTime) {
+            $form['hours']->setDefaultValue((int)($lunchTime->lunch_in_minutes/60));
+            $form['minutes']->setDefaultValue($lunchTime->lunch_in_minutes%60);
+        }
+
+        return $form;
+    }
+
+    public function lunchTimeFormSubmitted(Form $form)
+    {
+        $values = $form->getValues();
+
+        $minutesToSave = (int)$values->minutes + (60 * (int)$values->hours);
+        $this->timesheetDataRepository->setLunchTime($this->user->getId(), $minutesToSave);
+
+        $this->redirect(':Account:Time:');
     }
 }

@@ -50,7 +50,7 @@ class TimesheetRepository extends Repository
         $this->findBy(array('user_id' => $userId, 'id' => $timesheetId))->delete();
     }
 
-    public function getTodayWorkHours($user_id)
+    public function getTodayWorkHours($user_id, $lunchTime)
     {
         $sumHours = 0;
         $sumMinutes = 0;
@@ -62,9 +62,7 @@ class TimesheetRepository extends Repository
             ->fetchAll();
 
         if(!$timesheets) {
-            $out['hours'] = 0;
-            $out['minutes'] = 0;
-            return $out;
+            return $this->sendEmptyWorktime();
         }
 
         foreach($timesheets as $timesheet) {
@@ -73,10 +71,24 @@ class TimesheetRepository extends Repository
             $sumMinutes += (int)$diff->format('%i');
         }
 
-        $restHours = $sumMinutes/60;
-        $out['hours'] = (int)$restHours + (int)$sumHours;
-        $out['minutes'] = (int)$sumMinutes%60;
+        $time = (int)$sumHours * 60;
+        $time += (int)$sumMinutes;
+        $time -= (int)$lunchTime;
 
+        if($time < 0) {
+            return $this->sendEmptyWorktime();
+        }
+
+        $out['hours'] = (int)($time/60);
+        $out['minutes'] = (int)($time%60);
+
+        return $out;
+    }
+
+    private function sendEmptyWorktime()
+    {
+        $out['hours'] = 0;
+        $out['minutes'] = 0;
         return $out;
     }
 }
