@@ -28,3 +28,52 @@ body {
 .grid-description {
     width: 150px !important;
 }
+
+.time-description textarea{
+    width: 585px;
+    height: 100px;
+    margin: 0;
+}
+
+.time-description input {
+    vertical-align: bottom;
+    height: 110px;
+}
+
+.right-margin {
+    margin-right: 20px;
+}
+
+.right-margin-small {
+    margin-right: 5px;
+}
+
+.time-boxes input,
+.time-boxes select {
+    width: 180px;
+}
+
+.time-lunch-box {
+    width: 200px;
+    height: 176px;
+    margin-left: 20px;
+}
+
+.lunch-width input {
+    width: 30px;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.lunch-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+.time-well {
+    padding-bottom: 0 !important;
+    padding-right: 0 !important;
+}

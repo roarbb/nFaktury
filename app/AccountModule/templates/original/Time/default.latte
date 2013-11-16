@@ -2,68 +2,84 @@
 
 {block content}
     <div id="content">
-        {form insertEditTimeForm}
+        <div class="pull-left well time-well">
+            {form insertEditTimeForm}
 
-            <div n:inner-if="$form->hasErrors()">
-                <div class="alert alert-error" n:foreach="$form->errors as $error">{$error}</div>
-            </div>
+                <div n:inner-if="$form->hasErrors()">
+                    <div class="alert alert-error" n:foreach="$form->errors as $error">{$error}</div>
+                </div>
 
-            <div id="from" class="input-append">
-                {label project_id /}
-                {input project_id}
-            </div>
+                <div class="time-boxes">
+                    <div class="pull-left right-margin">
+                        {label project_id /}
+                        {input project_id}
+                    </div>
 
-            <div id="from" class="input-append">
-                {label description /}
-                {input description}
-            </div>
+                    <div id="from" class="input-append pull-left right-margin">
+                        {label from /}
+                        {input from}
+                        <span class="add-on">
+                        <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                    </span>
+                    </div>
 
-            <div id="from" class="input-append">
-                {label from /}
-                {input from}
-                <span class="add-on">
-                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                </span>
-            </div>
+                    <div id="to" class="input-append pull-left right-margin">
+                        {label to /}
+                        {input to}
+                        <span class="add-on">
+                        <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                    </span>
+                    </div>
+                </div>
 
-            <div id="to" class="input-append">
-                {label to /}
-                {input to}
-                <span class="add-on">
-                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                </span>
-            </div>
+                <div class="clearfix"/>
 
-            {input submit}
-        {/form}
+                <div class="time-description">
+                    {*{label description /}*}
+                    {input description}
+
+                    {input submit}
+                </div>
+            {/form}
+        </div>
+
+        <div class="pull-left well time-lunch-box">
+            <div class="lunch-title">Obed</div>
+            {form insertEditLunchTimeForm}
+                <div class="input-prepend pull-left right-margin-small">
+                    <span class="add-on">{label hours /}</span>
+                    <span class="lunch-width">{input hours}</span>
+                </div>
+
+                <div class="input-prepend pull-left">
+                    <span class="add-on">{label minutes /}</span>
+                    <span class="lunch-width">{input minutes}</span>
+                </div>
+
+                <br class="clearfix"/>
+
+                {input submit}
+            {/form}
+
+            <hr/>
+
+            <div class="lunch-title">Dnes si už odpracoval</div>
+            {$todayWorktime['hours']} hod. {$todayWorktime['minutes']} min.
+        </div>
+
+        <div class="clearfix"></div>
 
         {if $todaysTimesheets}
             {foreach $todaysTimesheets as $timeSheet}
                 <div>
                     {$projects[$timeSheet->project_id]}
                     | {$timeSheet->description}
-                    | {$timeSheet->from->format('H:i')} - {$timeSheet->to->format('H:i')}
+                    | {if $timeSheet->from}{$timeSheet->from->format('H:i')}{/if} {if $timeSheet->to}- {$timeSheet->to->format('H:i')}{/if}
                     <a n:href=":Account:time: $timeSheet->id" class="btn btn-small btn-primary">Upraviť</a>
                     <a n:href="delete! $timeSheet->id" class="btn btn-small btn-danger">Zmazať</a>
                 </div>
             {/foreach}
         {/if}
-
-        <br/>
-        <hr/>
-        <br/>
-
-        <div>
-            Dnes si už odpracoval: <span class="well">{$todayWorktime['hours']} hod. {$todayWorktime['minutes']} min.</span>
-        </div>
-
-        <div>
-            <br class="clearfix">
-            <br>
-            <h2>Obed</h2>
-            {control insertEditLunchTimeForm}
-        </div>
-
     </div>
 {/block}
 

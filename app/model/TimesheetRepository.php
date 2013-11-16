@@ -23,7 +23,7 @@ class TimesheetRepository extends Repository
     {
         $timesheet = $this->fetchById($timesheetId);
 
-        if ($timesheet !== FALSE && $timesheet->user_id == $userId && $timesheet->from->format('d.m.Y') == date('d.m.Y') ) {
+        if ($timesheet !== FALSE && $timesheet->user_id == $userId && $timesheet->created->format('d.m.Y') == date('d.m.Y') ) {
             return true;
         } else {
             return false;
@@ -39,7 +39,7 @@ class TimesheetRepository extends Repository
     {
         return $this->getTable()
             ->where('user_id', $user_id)
-            ->where('? = ?', new SqlLiteral('DATE_FORMAT(NOW(), "%Y-%m-%d")'), new SqlLiteral('DATE_FORMAT(`from`,"%Y-%m-%d")'))
+            ->where('? = ?', new SqlLiteral('DATE_FORMAT(NOW(), "%Y-%m-%d")'), new SqlLiteral('DATE_FORMAT(`created`,"%Y-%m-%d")'))
             ->order('from')
             ->fetchAll();
 

@@ -97,7 +97,7 @@ class TimePresenter extends BasePresenter
         $form->addSelect('project_id', 'Projekt', $projects)
             ->setPrompt('- vyber -')
             ->setRequired('Zadajte projekt prosím');
-        $form->addTextArea('description', 'Popis');
+        $form->addTextArea('description', 'Popis')->setAttribute('placeholder', 'Popis práce')->setRequired('Prosím napíš čo si robil.');
         $form->addText('from', 'Od')->setAttribute('data-format', $datetimeFormat);
         $form->addText('to', 'Do')->setAttribute('data-format', $datetimeFormat);
         $form->addHidden('row_id', $timeRowId);
@@ -109,8 +109,12 @@ class TimePresenter extends BasePresenter
             $timesheetData = $this->timesheetRepository->fetchById($timeRowId);
             if($timesheetData) {
                 $form->setDefaults($timesheetData);
-                $form['to']->setDefaultValue($timesheetData->to->format('H:i'));
-                $form['from']->setDefaultValue($timesheetData->from->format('H:i'));
+                if($timesheetData->to) {
+                    $form['to']->setDefaultValue($timesheetData->to->format('H:i'));
+                }
+                if($timesheetData->from) {
+                    $form['from']->setDefaultValue($timesheetData->from->format('H:i'));
+                }
             } else {
                 $form->addError('Záznam neexistuje.');
             }
@@ -132,8 +136,17 @@ class TimePresenter extends BasePresenter
 
         $values->user_id = $this->user->getId();
         $values->last_update = new DateTime();
-        $values->from = $today . ' ' . $values->from;
-        $values->to = $today . ' ' . $values->to;
+        if($values->from) {
+            $values->from = $today . ' ' . $values->from;
+        } else {
+            unset($values->from);
+        }
+
+        if($values->to) {
+            $values->to = $today . ' ' . $values->to;
+        } else {
+            unset($values->to);
+        }
 
         if(!empty($row_id)) {
             //update
@@ -152,9 +165,9 @@ class TimePresenter extends BasePresenter
     {
         $form = new Form();
         $form->addText('hours', 'Hodiny');
-        $form->addText('minutes', 'Minuty');
+        $form->addText('minutes', 'Minúty');
         $form->onSuccess[] = $this->lunchTimeFormSubmitted;
-        $form->addSubmit('submit', 'Uložiť')->setAttribute('class', 'btn btn-success');
+        $form->addSubmit('submit', 'Uložiť obed')->setAttribute('class', 'btn btn-success full-width');
 
         $lunchTime = $this->timesheetDataRepository->getLunchTime($this->user->getId(), date('Y-m-d'));
         if($lunchTime) {
