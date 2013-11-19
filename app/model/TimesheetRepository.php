@@ -32,7 +32,6 @@ class TimesheetRepository extends Repository
 
     /**
      * @param $user_id
-     *
      * @return array|IRow[]
      */
     public function getTodaysTimesheets($user_id)
@@ -42,7 +41,6 @@ class TimesheetRepository extends Repository
             ->where('? = ?', new SqlLiteral('DATE_FORMAT(NOW(), "%Y-%m-%d")'), new SqlLiteral('DATE_FORMAT(`created`,"%Y-%m-%d")'))
             ->order('from')
             ->fetchAll();
-
     }
 
     public function deleteTimeSheet($timesheetId, $userId)
@@ -50,16 +48,20 @@ class TimesheetRepository extends Repository
         $this->findBy(array('user_id' => $userId, 'id' => $timesheetId))->delete();
     }
 
-    public function getTodayWorkHours($user_id, $lunchTime)
+    public function getWorkHours($userId, $lunchTime, $month = NULL, $year = NULL)
     {
         $sumHours = 0;
         $sumMinutes = 0;
         $out = array();
 
-        $timesheets = $this->getTable()
-            ->where('? = ?', new SqlLiteral('DATE_FORMAT(NOW(), "%Y-%m-%d")'), new SqlLiteral('DATE_FORMAT(`from`,"%Y-%m-%d")'))
-            ->where('user_id', $user_id)
-            ->fetchAll();
+        if($month && $year) {
+            $timesheets = $this->getMonthlyTimesheet($month, $year, $userId);
+        } else {
+            $timesheets = $this->getTable()
+                ->where('? = ?', new SqlLiteral('DATE_FORMAT(NOW(), "%Y-%m-%d")'), new SqlLiteral('DATE_FORMAT(`from`,"%Y-%m-%d")'))
+                ->where('user_id', $userId)
+                ->fetchAll();
+        }
 
         if(!$timesheets) {
             return $this->sendEmptyWorktime();
@@ -90,5 +92,32 @@ class TimesheetRepository extends Repository
         $out['hours'] = 0;
         $out['minutes'] = 0;
         return $out;
+    }
+
+    public function getMonthlyTimesheetArray($month, $year, $userId)
+    {
+        $out = array();
+
+        $timesheets = $this->getMonthlyTimesheet($month, $year, $userId);
+
+        foreach ($timesheets as $timesheet) {
+            $out[$timesheet->created->format('d')][] = $timesheet;
+        }
+
+        if(!empty($out)) {
+            return $out;
+        } else {
+            return false;
+        }
+    }
+
+    private function getMonthlyTimesheet($month, $year, $userId)
+    {
+        return $this->getTable()
+            ->where('user_id', $userId)
+            ->where('? = ?', new SqlLiteral('MONTH(`created`)'), $month)
+            ->where('? = ?', new SqlLiteral('YEAR(`created`)'), $year)
+            ->order('`from` ASC')
+            ->fetchAll();
     }
 }

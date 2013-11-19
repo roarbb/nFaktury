@@ -7,7 +7,7 @@
 
 namespace AccountModule;
 
-
+use EventCalendar\Simple\SimpleCalendar;
 use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 use Nette\Application\UI\Form;
 use Nette\DateTime;
@@ -57,6 +57,11 @@ class TimePresenter extends BasePresenter
             $this->flashMessage('Záznam neexistuje.', 'danger');
             $this->redirect(':Account:time:');
         }
+
+        $this->template->daysInMonth = cal_days_in_month(CAL_GREGORIAN, $this->month, $this->year);
+        $this->template->monthlyTimesheets = $this->timesheetRepository->getMonthlyTimesheetArray($this->month, $this->year, $this->user->getId());
+        $this->template->year = $this->year;
+        $this->template->month = $this->month;
     }
 
     public function handleDelete($id)
@@ -78,9 +83,15 @@ class TimePresenter extends BasePresenter
         $todaysTimesheets = $this->timesheetRepository->getTodaysTimesheets($this->user->getId());
         $this->template->todaysTimesheets = $todaysTimesheets;
         $this->template->projects = $this->projects;
-        $this->template->todayWorktime = $this->timesheetRepository->getTodayWorkHours(
+        $this->template->todayWorktime = $this->timesheetRepository->getWorkHours(
             $this->user->getId(),
             $lunchInMinutes
+        );
+        $this->template->monthlyWorktime = $this->timesheetRepository->getWorkHours(
+            $this->user->getId(),
+            $this->timesheetDataRepository->getMonthlyLunchTime($this->user->getId(), $this->month, $this->year),
+            $this->month,
+            $this->year
         );
     }
 
@@ -187,4 +198,7 @@ class TimePresenter extends BasePresenter
 
         $this->redirect(':Account:Time:');
     }
+
+
+
 }

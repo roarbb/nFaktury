@@ -1,4 +1,5 @@
 <?php
+use Nette\Database\SqlLiteral;
 
 /**
  * Projet: faktury
@@ -32,5 +33,22 @@ class Timesheet_dataRepository extends Repository
             'user_id' => $userId,
             'day' => $date,
         ))->fetch();
+    }
+
+    public function getMonthlyLunchTime($userId, $month, $year)
+    {
+        $out = 0;
+
+        $timesheetData = $this->getTable()
+            ->where('user_id', $userId)
+            ->where('? = ?', new SqlLiteral('MONTH(`day`)'), $month)
+            ->where('? = ?', new SqlLiteral('YEAR(`day`)'), $year)
+            ->fetchAll();
+
+        foreach ($timesheetData as $data) {
+            $out += (int)$data->lunch_in_minutes;
+        }
+
+        return $out;
     }
 }

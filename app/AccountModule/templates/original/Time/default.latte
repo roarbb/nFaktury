@@ -80,6 +80,26 @@
                 </div>
             {/foreach}
         {/if}
+
+        <hr>
+
+        <div>
+            Tento mesiac si odpracoval: {$monthlyWorktime['hours']} hod. {$monthlyWorktime['minutes']} min.
+            {for $i=1; $i<=$daysInMonth; $i++}
+                <div class="well">
+                    <div class="badge">
+                        {$i}.{$month}.{$year}
+                    </div>
+                    <div>
+                        {ifset $monthlyTimesheets[$i]}
+                            {foreach $monthlyTimesheets[$i] as $task}
+                                {$task->description} {$task->from->format('H:i')} - {$task->to->format('H:i')}<br>
+                            {/foreach}
+                        {/ifset}
+                    </div>
+                </div>
+            {/for}
+        </div>
     </div>
 {/block}
 
