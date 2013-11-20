@@ -93,6 +93,7 @@ class TimePresenter extends BasePresenter
             $this->month,
             $this->year
         );
+        $this->template->timesheetData = $this->timesheetDataRepository->getMonthDataArray($this->user->getId(), $this->month, $this->year);
     }
 
     protected function createComponentInsertEditTimeForm()

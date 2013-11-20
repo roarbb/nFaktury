@@ -39,14 +39,33 @@ class Timesheet_dataRepository extends Repository
     {
         $out = 0;
 
-        $timesheetData = $this->getTable()
-            ->where('user_id', $userId)
-            ->where('? = ?', new SqlLiteral('MONTH(`day`)'), $month)
-            ->where('? = ?', new SqlLiteral('YEAR(`day`)'), $year)
-            ->fetchAll();
+        $timesheetData = $this->getMonthData($userId, $month, $year);
 
         foreach ($timesheetData as $data) {
             $out += (int)$data->lunch_in_minutes;
+        }
+
+        return $out;
+    }
+
+    private function getMonthData($userId, $month, $year)
+    {
+        return $this->getTable()
+             ->where('user_id', $userId)
+             ->where('? = ?', new SqlLiteral('MONTH(`day`)'), $month)
+             ->where('? = ?', new SqlLiteral('YEAR(`day`)'), $year)
+             ->fetchAll();
+    }
+
+    public function getMonthDataArray($userId, $month, $year)
+    {
+        $monthData = $this->getMonthData($userId, $month, $year);
+
+        if(!$monthData) return false;
+
+        $out = array();
+        foreach ( $monthData as $data ) {
+            $out[$data->day->format('d')] = $data;
         }
 
         return $out;
