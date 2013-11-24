@@ -57,10 +57,7 @@ class TimesheetRepository extends Repository
         if($month && $year) {
             $timesheets = $this->getMonthlyTimesheet($month, $year, $userId);
         } else {
-            $timesheets = $this->getTable()
-                ->where('? = ?', new SqlLiteral('DATE_FORMAT(NOW(), "%Y-%m-%d")'), new SqlLiteral('DATE_FORMAT(`from`,"%Y-%m-%d")'))
-                ->where('user_id', $userId)
-                ->fetchAll();
+            $timesheets = $this->getTodaysTimesheets($userId);
         }
 
         if(!$timesheets) {
@@ -101,7 +98,7 @@ class TimesheetRepository extends Repository
         $timesheets = $this->getMonthlyTimesheet($month, $year, $userId);
 
         foreach ($timesheets as $timesheet) {
-            $out[$timesheet->created->format('d')][] = $timesheet;
+            $out[$timesheet->created->format('j')][] = $timesheet;
         }
 
         if(!empty($out)) {

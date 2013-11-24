@@ -11,6 +11,7 @@ use EventCalendar\Simple\SimpleCalendar;
 use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 use Nette\Application\UI\Form;
 use Nette\DateTime;
+use Nette\Diagnostics\Debugger;
 
 class TimePresenter extends BasePresenter
 {
