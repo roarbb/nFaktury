@@ -101,7 +101,7 @@ class TimesheetRepository extends Repository
         $timesheets = $this->getMonthlyTimesheet($month, $year, $userId);
 
         foreach ($timesheets as $timesheet) {
-            $out[$timesheet->created->format('d')][] = $timesheet;
+            $out[$timesheet->created->format('j')][] = $timesheet;
         }
 
         if(!empty($out)) {
