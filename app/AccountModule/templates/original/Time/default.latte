@@ -110,7 +110,9 @@
                             <td>
                                 {ifset $monthlyTimesheets[$i]}
                                     {foreach $monthlyTimesheets[$i] as $task}
-                                        {$task->description} {$task->from->format('H:i')} - {$task->to->format('H:i')}<br>
+                                        {$task->description}
+                                        {if $task->from}{$task->from->format('H:i')}{/if} -
+                                        {if $task->to}{$task->to->format('H:i')}{/if}<br>
                                     {/foreach}
                                 {/ifset}
                             </td>

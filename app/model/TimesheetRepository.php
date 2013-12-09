@@ -65,9 +65,11 @@ class TimesheetRepository extends Repository
         }
 
         foreach($timesheets as $timesheet) {
-            $diff = $timesheet->to->diff($timesheet->from);
-            $sumHours += (int)$diff->format('%h');
-            $sumMinutes += (int)$diff->format('%i');
+            if($timesheet->to) {
+                $diff = $timesheet->to->diff($timesheet->from);
+                $sumHours += (int)$diff->format('%h');
+                $sumMinutes += (int)$diff->format('%i');
+            }
         }
 
         $time = (int)$sumHours * 60;
