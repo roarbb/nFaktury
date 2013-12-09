@@ -19,14 +19,15 @@ class TimePresenter extends BasePresenter
      * @var \TimesheetRepository
      */
     private $timesheetRepository;
-
     /**
      * @var \ProjectRepository
      */
     private $projectRepository;
+
     private $year;
     private $month;
     private $projects;
+    private $userId;
     /**
      * @var \Timesheet_dataRepository
      */
@@ -46,55 +47,67 @@ class TimePresenter extends BasePresenter
     public function startup()
     {
         parent::startup();
-        $this->month = date('m');
-        $this->year = date('Y');
-        $this->projects = $this->projectRepository->getProjectsForUser($this->user->getId());
+
+        $get = $this->getHttpRequest()->getQuery();
+        if( isset($get['month']) && !empty($get['month']) && isset($get['year']) && !empty($get['year']) ) {
+            $this->month = $get['month'];
+            $this->year = $get['year'];
+        } else {
+            $this->month = date('m');
+            $this->year = date('Y');
+        }
+
+        $this->userId = $this->user->getId();
+        $this->projects = $this->projectRepository->getProjectsForUser($this->userId);
     }
 
     public function actionDefault($id)
     {
-        $isMine = $this->timesheetRepository->isMineAndTodayTimesheet($id, $this->user->getId());
+        $isMine = $this->timesheetRepository->isMineAndTodayTimesheet($id, $this->userId);
         if($id && !$isMine) {
             $this->flashMessage('Záznam neexistuje.', 'danger');
             $this->redirect(':Account:time:');
         }
 
         $this->template->daysInMonth = cal_days_in_month(CAL_GREGORIAN, $this->month, $this->year);
-        $this->template->monthlyTimesheets = $this->timesheetRepository->getMonthlyTimesheetArray($this->month, $this->year, $this->user->getId());
-        $this->template->year = $this->year;
-        $this->template->month = $this->month;
+        $this->template->monthlyTimesheets = $this->timesheetRepository->getMonthlyTimesheetArray($this->month, $this->year, $this->userId);
     }
 
     public function handleDelete($id)
     {
-        $this->timesheetRepository->deleteTimeSheet($id, $this->user->getId());
+        $this->timesheetRepository->deleteTimeSheet($id, $this->userId);
         $this->flashMessage('Záznam úspešne zmazaný.', 'success');
         $this->redirect(':Account:time:');
     }
 
     public function renderDefault()
     {
-        $lunchTime = $this->timesheetDataRepository->getLunchTime($this->user->getId(), date('Y-m-d'));
+        $lunchTime = $this->timesheetDataRepository->getLunchTime($this->userId, date('Y-m-d'));
         if($lunchTime) {
             $lunchInMinutes = $lunchTime->lunch_in_minutes;
         } else {
             $lunchInMinutes = 0;
         }
 
-        $todaysTimesheets = $this->timesheetRepository->getTodaysTimesheets($this->user->getId());
+        $todaysTimesheets = $this->timesheetRepository->getTodaysTimesheets($this->userId);
         $this->template->todaysTimesheets = $todaysTimesheets;
         $this->template->projects = $this->projects;
         $this->template->todayWorktime = $this->timesheetRepository->getWorkHours(
-            $this->user->getId(),
+            $this->userId,
             $lunchInMinutes
         );
         $this->template->monthlyWorktime = $this->timesheetRepository->getWorkHours(
-            $this->user->getId(),
-            $this->timesheetDataRepository->getMonthlyLunchTime($this->user->getId(), $this->month, $this->year),
+            $this->userId,
+            $this->timesheetDataRepository->getMonthlyLunchTime($this->userId, $this->month, $this->year),
             $this->month,
             $this->year
         );
-        $this->template->timesheetData = $this->timesheetDataRepository->getMonthDataArray($this->user->getId(), $this->month, $this->year);
+        $this->template->timesheetData = $this->timesheetDataRepository->getMonthDataArray($this->userId, $this->month, $this->year);
+        $this->template->month = $this->month;
+        $this->template->year = $this->year;
+
+        $this->template->nextDate = $this->timesheetRepository->getNextDate($this->month, $this->year);
+        $this->template->prevDate = $this->timesheetRepository->getPrevDate($this->month, $this->year);
     }
 
     protected function createComponentInsertEditTimeForm()
@@ -147,7 +160,7 @@ class TimePresenter extends BasePresenter
         $row_id = $values->row_id;
         unset($values->row_id);
 
-        $values->user_id = $this->user->getId();
+        $values->user_id = $this->userId;
         $values->last_update = new DateTime();
         if($values->from) {
             $values->from = $today . ' ' . $values->from;
@@ -163,7 +176,7 @@ class TimePresenter extends BasePresenter
 
         if(!empty($row_id)) {
             //update
-            $this->timesheetRepository->updateTimeRow($row_id, $this->user->getId(), $values);
+            $this->timesheetRepository->updateTimeRow($row_id, $this->userId, $values);
             $this->flashMessage('Záznam úspešne upravený.', 'success');
             $this->redirect(':Account:time:');
         } else {
@@ -182,7 +195,7 @@ class TimePresenter extends BasePresenter
         $form->onSuccess[] = $this->lunchTimeFormSubmitted;
         $form->addSubmit('submit', 'Uložiť obed')->setAttribute('class', 'btn btn-success full-width');
 
-        $lunchTime = $this->timesheetDataRepository->getLunchTime($this->user->getId(), date('Y-m-d'));
+        $lunchTime = $this->timesheetDataRepository->getLunchTime($this->userId, date('Y-m-d'));
         if($lunchTime) {
             $form['hours']->setDefaultValue((int)($lunchTime->lunch_in_minutes/60));
             $form['minutes']->setDefaultValue($lunchTime->lunch_in_minutes%60);
@@ -196,11 +209,8 @@ class TimePresenter extends BasePresenter
         $values = $form->getValues();
 
         $minutesToSave = (int)$values->minutes + (60 * (int)$values->hours);
-        $this->timesheetDataRepository->setLunchTime($this->user->getId(), $minutesToSave);
+        $this->timesheetDataRepository->setLunchTime($this->userId, $minutesToSave);
 
         $this->redirect(':Account:Time:');
     }
-
-
-
 }

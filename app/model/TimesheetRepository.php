@@ -119,4 +119,18 @@ class TimesheetRepository extends Repository
             ->order('`from` ASC')
             ->fetchAll();
     }
+
+    public function getNextDate($month, $year)
+    {
+        $interval = DateInterval::createFromDateString('1 month');
+        $date = new \Nette\DateTime($year . '-' . $month . '-01');
+        return $date->add($interval);
+    }
+
+    public function getPrevDate($month, $year)
+    {
+        $interval = DateInterval::createFromDateString('1 month');
+        $date = new \Nette\DateTime($year . '-' . $month . '-01');
+        return $date->sub($interval);
+    }
 }
