@@ -85,11 +85,11 @@
 
         <div>
             <span>
-                <a class="btn" n:href=":Account:Time: month => $prevDate->format('m'), year => $prevDate->format('Y')">&laquo;</a>
+                <a class="btn btn-mini btn-primary" n:href=":Account:Time: month => $prevDate->format('m'), year => $prevDate->format('Y')"><i class="icon-arrow-left icon-white"></i></a>
                 {date('F', strtotime($year . '-' . $month . '-01'))}
-                <a class="btn" n:href=":Account:Time: month => $nextDate->format('m'), year => $nextDate->format('Y')">&raquo;</a>
+                <a class="btn btn-mini btn-primary" n:href=":Account:Time: month => $nextDate->format('m'), year => $nextDate->format('Y')"><i class="icon-arrow-right icon-white"></i></a>
             </span>
-             Tento mesiac si odpracoval: {$monthlyWorktime['hours']} hod. {$monthlyWorktime['minutes']} min.
+             Tento mesiac si odpracoval: <b>{$monthlyWorktime['hours']} hod. {$monthlyWorktime['minutes']} min.</b>
             <br />
             <br />
             <table class="table table-hover table-bordered">
