@@ -80,4 +80,9 @@ class UserRepository extends Repository
     {
         $this->getTable()->where('id', $userId)->update($data);
     }
+
+    public function getUserByMail($email)
+    {
+        return $this->findBy(array('email' => $email));
+    }
 }

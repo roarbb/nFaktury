@@ -19,29 +19,47 @@ class TimePresenter extends BasePresenter
      * @var \TimesheetRepository
      */
     private $timesheetRepository;
+
     /**
      * @var \ProjectRepository
      */
     private $projectRepository;
 
     private $year;
+
     private $month;
+
     private $projects;
+
     private $userId;
     /**
      * @var \Timesheet_dataRepository
      */
     private $timesheetDataRepository;
 
+    /**
+     * @var \Timesheet_shareRepository
+     */
+    private $timesheet_shareRepository;
+
+    /**
+     * @var \UserRepository
+     */
+    private $userRepository;
+
     public function injectDefault(
         \TimesheetRepository $timesheetRepository,
         \ProjectRepository $projectRepository,
-        \Timesheet_dataRepository $timesheetDataRepository
+        \Timesheet_dataRepository $timesheetDataRepository,
+        \Timesheet_shareRepository $timesheet_shareRepository,
+        \UserRepository $userRepository
     )
     {
         $this->timesheetRepository = $timesheetRepository;
         $this->projectRepository = $projectRepository;
         $this->timesheetDataRepository = $timesheetDataRepository;
+        $this->timesheet_shareRepository = $timesheet_shareRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function startup()
@@ -57,7 +75,16 @@ class TimePresenter extends BasePresenter
             $this->year = date('Y');
         }
 
-        $this->userId = $this->user->getId();
+        if(isset($get['userid']) && !empty($get['userid'])) {
+            if($this->timesheet_shareRepository->canViewThisUser($this->user->getId(), $get['userid'])) {
+                $this->userId = $get['userid'];
+            } else {
+                $this->flashMessage('Nemáte právo vidieť tento timesheet.', 'error');
+                $this->redirect('this');
+            }
+        } else {
+            $this->userId = $this->user->getId();
+        }
         $this->projects = $this->projectRepository->getProjectsForUser($this->userId);
     }
 
@@ -108,6 +135,11 @@ class TimePresenter extends BasePresenter
 
         $this->template->nextDate = $this->timesheetRepository->getNextDate($this->month, $this->year);
         $this->template->prevDate = $this->timesheetRepository->getPrevDate($this->month, $this->year);
+    }
+
+    public function renderShare()
+    {
+
     }
 
     protected function createComponentInsertEditTimeForm()
@@ -212,5 +244,48 @@ class TimePresenter extends BasePresenter
         $this->timesheetDataRepository->setLunchTime($this->userId, $minutesToSave);
 
         $this->redirect(':Account:Time:');
+    }
+
+    protected function createComponentTimeShareForm()
+    {
+        $form = new Form();
+        $form->setRenderer(new BootstrapRenderer());
+
+        $form->addText('email', 'Email osoby ktorej chcete zdieľať timesheet')->setRequired();
+        $form->addSubmit('submit', 'Zdieľať');
+
+        $form->onSuccess[] = $this->timeShareFormSubmitted;
+
+        return $form;
+    }
+
+    public function timeShareFormSubmitted(Form $form)
+    {
+        $values = $form->getValues();
+        $shareUser = $this->userRepository->getUserByMail($values->email);
+
+        if($shareUser->count() > 0) {
+            $shareReciever = $shareUser->fetch();
+
+            if($this->user->getId() == $shareReciever->id) {
+                $this->flashMessage('Zdieľať timesheet sám sebe? Schyzofrénia? Čo si už ozaj ... ?', 'info');
+                $this->redirect('this');
+            }
+
+            try {
+                $this->timesheet_shareRepository->setShare($this->user->getId(), $shareReciever->id);
+            } catch(\Exception $e) {
+                if($e->getCode() == 23000) {
+                    $form->addError('Duplicitné zdieľanie.');
+                    return $form;
+                }
+            }
+
+            $this->flashMessage('Zdieľanie úspešne pridané.', 'success');
+            $this->redirect('this');
+        } else {
+            $this->flashMessage('Používateľ neexistuje.', 'error');
+            $this->redirect('this');
+        }
     }
 }
