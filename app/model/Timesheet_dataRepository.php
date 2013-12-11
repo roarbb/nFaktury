@@ -65,7 +65,7 @@ class Timesheet_dataRepository extends Repository
 
         $out = array();
         foreach ( $monthData as $data ) {
-            $out[$data->day->format('d')] = $data;
+            $out[$data->day->format('j')] = $data;
         }
 
         return $out;
