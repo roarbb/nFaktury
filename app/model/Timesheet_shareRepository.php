@@ -22,13 +22,25 @@ class Timesheet_shareRepository extends Repository
         }
     }
 
-    public function setShare($userId, $timesheetOwnerId)
+    public function setShare($timesheetOwnerId, $timesheetRecieverId)
     {
         $insertData = array(
-            'user_id' => $userId,
+            'user_id' => $timesheetRecieverId,
             'timesheet_owner_id' => $timesheetOwnerId,
         );
 
         $this->getTable()->insert($insertData);
+    }
+
+    public function getOtherTimesheets($myUserId)
+    {
+        $where = array('user_id' => $myUserId, 'active' => 1);
+        return $this->findBy($where);
+    }
+
+    public function getMyShares($myUserId)
+    {
+        $where = array('timesheet_owner_id' => $myUserId);
+        return $this->findBy($where);
     }
 } 

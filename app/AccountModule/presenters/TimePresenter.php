@@ -139,7 +139,11 @@ class TimePresenter extends BasePresenter
 
     public function renderShare()
     {
+        $myShares = $this->timesheet_shareRepository->getMyShares($this->user->getId());
+        $canViewTimesheets = $this->timesheet_shareRepository->getOtherTimesheets($this->user->getId());
 
+        dump($myShares->count());
+        dump($canViewTimesheets->count());
     }
 
     protected function createComponentInsertEditTimeForm()
