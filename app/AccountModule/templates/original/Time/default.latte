@@ -70,24 +70,24 @@
 
                 <div class="lunch-title">Dnes si už odpracoval</div>
                 {$todayWorktime['hours']} hod. {$todayWorktime['minutes']} min.
+            </div>
+
+            <div class="clearfix"></div>
+
+            {if $todaysTimesheets}
+                {foreach $todaysTimesheets as $timeSheet}
+                    <div>
+                        {$projects[$timeSheet->project_id]}
+                        | {$timeSheet->description}
+                        | {if $timeSheet->from}{$timeSheet->from->format('H:i')}{/if} {if $timeSheet->to}- {$timeSheet->to->format('H:i')}{/if}
+                        <a n:href=":Account:time: $timeSheet->id" class="btn btn-small btn-primary">Upraviť</a>
+                        <a n:href="delete! $timeSheet->id" class="btn btn-small btn-danger">Zmazať</a>
+                    </div>
+                {/foreach}
             {/if}
-        </div>
 
-        <div class="clearfix"></div>
-
-        {if $todaysTimesheets}
-            {foreach $todaysTimesheets as $timeSheet}
-                <div>
-                    {$projects[$timeSheet->project_id]}
-                    | {$timeSheet->description}
-                    | {if $timeSheet->from}{$timeSheet->from->format('H:i')}{/if} {if $timeSheet->to}- {$timeSheet->to->format('H:i')}{/if}
-                    <a n:href=":Account:time: $timeSheet->id" class="btn btn-small btn-primary">Upraviť</a>
-                    <a n:href="delete! $timeSheet->id" class="btn btn-small btn-danger">Zmazať</a>
-                </div>
-            {/foreach}
+            <hr>
         {/if}
-
-        <hr>
 
         <div>
             <span>
