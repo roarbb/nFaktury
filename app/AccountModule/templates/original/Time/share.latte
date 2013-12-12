@@ -3,6 +3,7 @@
 {block content}
     <div id="content">
         <div class="well">
+            <br/>
             {form timeShareForm class => form-inline}
                 <div n:inner-if="$form->hasErrors()">
                     <div class="alert alert-error" n:foreach="$form->errors as $error">{$error}</div>
@@ -10,6 +11,9 @@
 
                 {label email /}
                 {input email}
+
+                &NonBreakingSpace;
+                &NonBreakingSpace;
 
                 {input submit class => 'btn btn-primary'}
             {/form}
