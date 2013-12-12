@@ -117,16 +117,25 @@
                         <tr>
                             <td class="date-width">
                                 <span class="label label-info">
-                                    <i class="icon-time icon-white"></i> {$i}.{$month}.{$year}
+                                    <i class="icon-calendar icon-white"></i>
+                                    {$i}.{$month}.{$year}
                                 </span>
                             </td>
                             <td>
                                 {ifset $monthlyTimesheets[$i]}
                                     {foreach $monthlyTimesheets[$i] as $task}
                                         <span class="badge badge-important"><i class="icon-leaf icon-white"></i> {$projects[$task->project_id]}</span>
-                                        {$task->description}
-                                        {if $task->from}{$task->from->format('H:i')}{/if} -
-                                        {if $task->to}{$task->to->format('H:i')}{/if}<br>
+                                        <span class="badge">
+                                            <i class="icon-time icon-white"></i>
+
+                                            {if $task->from}{$task->from->format('H:i')}{/if} -
+                                            {if $task->to}{$task->to->format('H:i')}{/if}
+                                        </span>
+                                        <span class="badge badge-success">
+                                            <i class="icon-tags icon-white"></i>
+                                            {$task->description|truncate:110}
+                                        </span>
+                                        <br />
                                     {/foreach}
                                 {/ifset}
                             </td>
