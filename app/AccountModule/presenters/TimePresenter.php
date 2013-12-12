@@ -47,6 +47,8 @@ class TimePresenter extends BasePresenter
      */
     private $userRepository;
 
+    private $timesheetOwner;
+
     public function injectDefault(
         \TimesheetRepository $timesheetRepository,
         \ProjectRepository $projectRepository,
@@ -78,6 +80,8 @@ class TimePresenter extends BasePresenter
         if(isset($get['userid']) && !empty($get['userid'])) {
             if($this->timesheet_shareRepository->canViewThisUser($this->user->getId(), $get['userid'])) {
                 $this->userId = $get['userid'];
+                $this->timesheetOwner = $this->userRepository->getUserById($this->userId);
+                $this->template->timesheetOwner = $this->timesheetOwner;
             } else {
                 $this->flashMessage('Nemáte právo vidieť tento timesheet.', 'error');
                 $this->redirect('this');
@@ -133,17 +137,25 @@ class TimePresenter extends BasePresenter
         $this->template->month = $this->month;
         $this->template->year = $this->year;
 
-        $this->template->nextDate = $this->timesheetRepository->getNextDate($this->month, $this->year);
-        $this->template->prevDate = $this->timesheetRepository->getPrevDate($this->month, $this->year);
+        $nextDate = $this->timesheetRepository->getNextDate($this->month, $this->year);
+        $prevDate = $this->timesheetRepository->getPrevDate($this->month, $this->year);
+
+        $nextLinkArgs = array('month' => $nextDate->format("m"), 'year' => $nextDate->format("Y"));
+        $prevLinkArgs = array('month' => $prevDate->format("m"), 'year' => $prevDate->format("Y"));
+
+        if(isset($this->timesheetOwner)) {
+            $nextLinkArgs['userid'] = $this->timesheetOwner->id;
+            $prevLinkArgs['userid'] = $this->timesheetOwner->id;
+        }
+
+        $this->template->nextDateLink = $this->link(':Account:Time:', $nextLinkArgs);
+        $this->template->prevDateLink = $this->link(':Account:Time:', $prevLinkArgs);
     }
 
     public function renderShare()
     {
-        $myShares = $this->timesheet_shareRepository->getMyShares($this->user->getId());
-        $canViewTimesheets = $this->timesheet_shareRepository->getOtherTimesheets($this->user->getId());
-
-        dump($myShares->count());
-        dump($canViewTimesheets->count());
+        $this->template->myShares = $this->timesheet_shareRepository->getMyShares($this->user->getId());
+        $this->template->canViewTimesheets = $this->timesheet_shareRepository->getOtherTimesheets($this->user->getId());
     }
 
     protected function createComponentInsertEditTimeForm()
@@ -277,11 +289,13 @@ class TimePresenter extends BasePresenter
             }
 
             try {
-                $this->timesheet_shareRepository->setShare($this->user->getId(), $shareReciever->id);
+                $this->timesheet_shareRepository->setShare($this->user->getId(), $shareReciever->id, $shareReciever->email);
             } catch(\Exception $e) {
                 if($e->getCode() == 23000) {
                     $form->addError('Duplicitné zdieľanie.');
                     return $form;
+                } else {
+                    $form->addError($e->getMessage());
                 }
             }
 

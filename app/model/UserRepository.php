@@ -85,4 +85,9 @@ class UserRepository extends Repository
     {
         return $this->findBy(array('email' => $email));
     }
+
+    public function getUserById($userId)
+    {
+        return $this->fetchById($userId);
+    }
 }

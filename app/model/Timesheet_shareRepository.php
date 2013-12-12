@@ -22,11 +22,12 @@ class Timesheet_shareRepository extends Repository
         }
     }
 
-    public function setShare($timesheetOwnerId, $timesheetRecieverId)
+    public function setShare($timesheetOwnerId, $timesheetRecieverId, $identification)
     {
         $insertData = array(
             'user_id' => $timesheetRecieverId,
             'timesheet_owner_id' => $timesheetOwnerId,
+            'identification' => $identification,
         );
 
         $this->getTable()->insert($insertData);
