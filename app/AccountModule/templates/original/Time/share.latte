@@ -2,20 +2,33 @@
 
 {block content}
     <div id="content">
-        {control timeShareForm}
+        <div class="well">
+            {form timeShareForm class => form-inline}
+                <div n:inner-if="$form->hasErrors()">
+                    <div class="alert alert-error" n:foreach="$form->errors as $error">{$error}</div>
+                </div>
 
-        {if $myShares->count() > 0}
-            <h2>Váš timesheet môžu vidieť títo ľudia:</h2>
-            {foreach $myShares as $share}
-                {$share->user_email}
-                <br/>
-            {/foreach}
-        {/if}
+                {label email /}
+                {input email}
+
+                {input submit class => 'btn btn-primary'}
+            {/form}
+        </div>
+
+        <hr/>
 
         {if $canViewTimesheets->count() > 0}
             <h2>Máte prístup k týmto timesheetom:</h2>
             {foreach $canViewTimesheets as $share}
                 <a n:href=":Account:Time: userid => $share->timesheet_owner_id">{$share->timesheet_owner_email}</a>
+                <br/>
+            {/foreach}
+        {/if}
+
+        {if $myShares->count() > 0}
+            <h2>Váš timesheet môžu vidieť títo ľudia:</h2>
+            {foreach $myShares as $share}
+                {$share->user_email}
                 <br/>
             {/foreach}
         {/if}

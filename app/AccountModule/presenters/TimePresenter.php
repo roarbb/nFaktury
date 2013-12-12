@@ -265,7 +265,6 @@ class TimePresenter extends BasePresenter
     protected function createComponentTimeShareForm()
     {
         $form = new Form();
-        $form->setRenderer(new BootstrapRenderer());
 
         $form->addText('email', 'Email osoby ktorej chcete zdieľať timesheet')->setRequired();
         $form->addSubmit('submit', 'Zdieľať');

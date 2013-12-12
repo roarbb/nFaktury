@@ -123,6 +123,7 @@
                             <td>
                                 {ifset $monthlyTimesheets[$i]}
                                     {foreach $monthlyTimesheets[$i] as $task}
+                                        <span class="badge badge-important"><i class="icon-leaf icon-white"></i> {$projects[$task->project_id]}</span>
                                         {$task->description}
                                         {if $task->from}{$task->from->format('H:i')}{/if} -
                                         {if $task->to}{$task->to->format('H:i')}{/if}<br>
