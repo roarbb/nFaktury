@@ -5,7 +5,7 @@
 
         {if isset($timesheetOwner)}
             <div class="alert alert-info">
-                Toto je timesheet používateľa <strong>{$timesheetOwner->email}</strong>
+                <i class="icon-eye-open"></i> Toto je timesheet používateľa <strong>{$timesheetOwner->email}</strong> <a n:href=":Account:Time:" class="btn btn-mini pull-right">&times; Zrušiť pohľad</a>
             </div>
         {else}
             <div class="pull-left well time-well">
