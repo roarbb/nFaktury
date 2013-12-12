@@ -80,10 +80,8 @@
                         {$projects[$timeSheet->project_id]}
                         | {$timeSheet->description}
                         | {if $timeSheet->from}{$timeSheet->from->format('H:i')}{/if} {if $timeSheet->to}- {$timeSheet->to->format('H:i')}{/if}
-                        <span class="pull-right" style="margin-right: 466px;">
-                            <a n:href=":Account:time: $timeSheet->id" class="btn btn-small btn-primary">Upraviť</a>
-                            <a n:href="delete! $timeSheet->id" class="btn btn-small btn-danger">Zmazať</a>
-                        </span>
+                        <a n:href=":Account:time: $timeSheet->id" class="btn btn-small btn-primary">Upraviť</a>
+                        <a n:href="delete! $timeSheet->id" class="btn btn-small btn-danger">Zmazať</a>
                     </div>
                 {/foreach}
             {/if}
