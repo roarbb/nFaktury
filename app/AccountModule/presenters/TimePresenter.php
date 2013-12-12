@@ -289,7 +289,7 @@ class TimePresenter extends BasePresenter
             }
 
             try {
-                $this->timesheet_shareRepository->setShare($this->user->getId(), $shareReciever->id, $shareReciever->email);
+                $this->timesheet_shareRepository->setShare($this->user->getId(), $shareReciever->id, $shareReciever->email, $this->user->getIdentity()->email);
             } catch(\Exception $e) {
                 if($e->getCode() == 23000) {
                     $form->addError('Duplicitné zdieľanie.');

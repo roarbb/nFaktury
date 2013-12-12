@@ -7,7 +7,7 @@
         {if $myShares->count() > 0}
             <h2>Váš timesheet môžu vidieť títo ľudia:</h2>
             {foreach $myShares as $share}
-                {$share->identification}
+                {$share->user_email}
                 <br/>
             {/foreach}
         {/if}
@@ -15,7 +15,7 @@
         {if $canViewTimesheets->count() > 0}
             <h2>Máte prístup k týmto timesheetom:</h2>
             {foreach $canViewTimesheets as $share}
-                <a n:href=":Account:Time: userid => $share->timesheet_owner_id">{$share->identification}</a>
+                <a n:href=":Account:Time: userid => $share->timesheet_owner_id">{$share->timesheet_owner_email}</a>
                 <br/>
             {/foreach}
         {/if}
