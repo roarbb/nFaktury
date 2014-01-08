@@ -34,6 +34,7 @@ class UserPresenter extends BasePresenter
         $form->addText('fa_supplier_city', 'Mesto');
         $form->addText('fa_supplier_tel', 'Telefón');
         $form->addText('fa_bank_account_no', 'Číslo účtu');
+        $form->addText('fa_suplier_ico', 'IČO');
         $form->addText('fa_dic', 'DIČ');
         $form->addText('fa_ic_dph', 'IČ DPH');
 
