@@ -15,7 +15,7 @@ require __DIR__ . '/../libs/autoload.php';
 $configurator = new Configurator;
 
 // Enable Nette Debugger for error visualisation & logging
-//$configurator->setDebugMode(TRUE);
+$configurator->setDebugMode(TRUE);
 $configurator->enableDebugger(__DIR__ . '/../log');
 Debugger::$maxDepth = 6;
 Debugger::$maxLen = 3000;
@@ -34,14 +34,15 @@ $configurator->addConfig(__DIR__ . '/config/config.neon');
 $container = $configurator->createContainer();
 
 // Setup router using mod_rewrite detection
-if (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {
-	$container->router[] = new Route('index.php', 'Front:Default:default', Route::ONE_WAY);
+// if (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {
+    $router = $container->getService('router');
+	$router[] = new Route('index.php', 'Front:Default:default', Route::ONE_WAY);
 
-	$container->router[] = $accountRouter = new RouteList('Account');
+	$router[] = $accountRouter = new RouteList('Account');
 	$accountRouter[] = new Route('account/time/<action>/[/<id>]', 'Time:default');
 	$accountRouter[] = new Route('account/<presenter>/<action>[/<id>]', 'Default:default');
 
-    $container->router[] = $adminRouter = new RouteList('Admin');
+    $router[] = $adminRouter = new RouteList('Admin');
     $adminRouter[] = new Route('ayr/module/edit/<moduleid>[/<id>]', 'Module:edit');
     $adminRouter[] = new Route('ayr/module/rowedit/<moduleid>[/<id>]', 'Module:rowedit');
     $adminRouter[] = new Route('ayr/module/rowdelete/<moduleid>[/<id>]', 'Module:rowdelete');
@@ -50,18 +51,18 @@ if (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_
 
     $adminRouter[] = new Route('ayr/<presenter>/<action>[/<id>]', 'Default:default');
 
-	$container->router[] = $frontRouter = new RouteList('Front');
+	$router[] = $frontRouter = new RouteList('Front');
 	$frontRouter[] = new Route('<presenter>/<action>[/<id>]', 'Default:default');
 
-} else {
-	$container->router = new SimpleRouter('Front:Default:default');
-}
+// } else {
+// 	$container->getService('router') = new SimpleRouter('Front:Default:default');
+// }
 
-$container->application->onStartup[] = function () use ($container) {
+$container->getService('application')->onStartup[] = function () use ($container) {
     // spusti sa chvilku po zavolani $application->run()
     // ma na starosti nastavenie konstant pre customizovanie instancie webu
-    $url = $container->httpRequest->getUrl();
-    $container->themeRepository->themeInit($url);
+    $url = $container->getService('httpRequest')->getUrl();
+    $container->getService('themeRepository')->themeInit($url);
 };
 
 return $container;

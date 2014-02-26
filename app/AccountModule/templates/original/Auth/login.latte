@@ -12,9 +12,9 @@
         <div class="alert alert-error" n:foreach="$form->errors as $error">{$error}</div>
     </div>
 
-    <input n:input="email" class="input-block-level" placeholder="Email" />
-    <input n:input="password" class="input-block-level" placeholder="Password" />
-    <input n:input="send" class="btn btn-large btn-primary" />
+    <input n:name="email" class="input-block-level" placeholder="Email" />
+    <input n:name="password" class="input-block-level" placeholder="Password" />
+    <input n:name="send" class="btn btn-large btn-primary" />
 
     <a class="pull-right" n:href=":front:user:forget">Zabudli ste heslo?</a>
 {/form}

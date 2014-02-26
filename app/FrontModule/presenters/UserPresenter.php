@@ -58,7 +58,7 @@ class UserPresenter extends \BasePresenter
     protected function createComponentRegisterForm()
     {
         $form = new Form();
-        $form->setRenderer(new BootstrapRenderer());
+        // $form->setRenderer(new BootstrapRenderer());
 
         $form->addText('nickname', 'Vaše meno:')->setRequired('Zadajte prosím Vaše meno.');
         $form->addText('email', 'Email:')
@@ -116,7 +116,7 @@ class UserPresenter extends \BasePresenter
     protected function createComponentForgetPassForm()
     {
         $form = new Form();
-        $form->setRenderer(new BootstrapRenderer);
+        // $form->setRenderer(new BootstrapRenderer);
 
         $form->addText('email', 'Email:')
             ->addRule(Form::EMAIL, 'Prosím zadajte správny formát emailu.')
@@ -155,7 +155,7 @@ class UserPresenter extends \BasePresenter
     protected function createComponentRepassForm()
     {
         $form = new Form();
-        $form->setRenderer(new BootstrapRenderer);
+        // $form->setRenderer(new BootstrapRenderer);
 
         $form->addPassword('password', 'Heslo:')
             ->setRequired('Zvoľte si heslo')
