@@ -43,7 +43,7 @@ class InvoicePresenter extends BasePresenter
 
     public function inject(\InvoiceRepository $invoiceRepository,
                            \Invoice_itemsRepository $invoiceItemsRepository,
-                           SelectionFactory $selectionFactory,
+                           \Nette\Database\Context $selectionFactory,
                            \UserRepository $userRepository,
                            \ClientRepository $clientRepository)
     {
@@ -108,38 +108,38 @@ class InvoicePresenter extends BasePresenter
         $grid = new Grid($this, $name);
         $grid->setModel($this->selectionFactory->table($table)->where('user_id', $this->user->getId()));
 
-        $grid->addColumn('invoice_number', 'Číslo faktúry');
-        $grid->addFilter('invoice_number', 'invoice_number');
+        $grid->addColumnText('invoice_number', 'Číslo faktúry');
+        $grid->addFilterText('invoice_number', 'invoice_number');
 
-//        $grid->addColumn('client_id', 'ID Klienta');
-//        $grid->addFilter('client_id', 'client_id');
+//        $grid->addColumnText('client_id', 'ID Klienta');
+//        $grid->addFilterText('client_id', 'client_id');
 
         $clients = $this->getClients();
-        $grid->addColumn('client_id', 'Klient')->setReplacement($clients);
-        $grid->addFilter('client_id', 'Klient', Filter::TYPE_SELECT, $clients);
+        $grid->addColumnText('client_id', 'Klient')->setReplacement($clients);
+        $grid->addFilterSelect('client_id', 'Klient', $clients);
 
-        $grid->addColumn('variable_sign', 'Variabilný symbol');
-        $grid->addFilter('variable_sign', 'variable_sign');
+        $grid->addColumnText('variable_sign', 'Variabilný symbol');
+        $grid->addFilterText('variable_sign', 'variable_sign');
 
-        $grid->addColumn('date_of_issue', 'Dátum vyhotovenia');
-        $grid->addFilter('date_of_issue', 'date_of_issue');
+        $grid->addColumnText('date_of_issue', 'Dátum vyhotovenia');
+        $grid->addFilterText('date_of_issue', 'date_of_issue');
 
-        $grid->addColumn('maturity_date', 'Dátum splatnosti');
-        $grid->addFilter('maturity_date', 'maturity_date');
+        $grid->addColumnText('maturity_date', 'Dátum splatnosti');
+        $grid->addFilterText('maturity_date', 'maturity_date');
 
-        $grid->addAction('edit', 'Upraviť')->setIcon('pencil');
-        $grid->addAction('show', 'PDF')->setIcon('list-alt');
-        $grid->addAction('delete', 'Vymazať')
+        $grid->addActionHref('edit', 'Upraviť')->setIcon('pencil');
+        $grid->addActionHref('show', 'PDF')->setIcon('list-alt');
+        $grid->addActionHref('delete', 'Vymazať')
             ->setIcon('trash')
             ->setConfirm('Naozaj chcete vymazať túto faktúru?');
 
-        $grid->setExporting($table);
+        $grid->setExport($table);
     }
 
     protected function createComponentInsertEditInvoiceForm()
     {
         $form = new Form();
-        $form->setRenderer(new BootstrapRenderer());
+        // $form->setRenderer(new BootstrapRenderer());
 
         $clients = $this->clientRepository->findBy(array('user_id' => $this->user->getId()))->fetchPairs('id', 'name');
         $nextInvoiceNo = $this->invoiceRepository->getNextInvoiceNumber($this->user->getId());
