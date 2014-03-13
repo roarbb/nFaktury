@@ -9,27 +9,23 @@ namespace AccountModule;
 
 
 use Grido\Grid;
-use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 use Nette\Application\UI\Form;
 use Nette\Database\SelectionFactory;
 
 class ClientPresenter extends BasePresenter
 {
     /**
+     * @inject
      * @var \ClientRepository
      */
-    private $clientRepository;
+    public $clientRepository;
 
     /**
-     * @var SelectionFactory
+     * @inject
+     * @var \Nette\Database\Context
      */
-    private $selectionFactory;
+    public $selectionFactory;
 
-    public function inject(\ClientRepository $clientRepository, SelectionFactory $selectionFactory)
-    {
-        $this->clientRepository = $clientRepository;
-        $this->selectionFactory = $selectionFactory;
-    }
 
     public function actionEdit($id)
     {
@@ -54,6 +50,26 @@ class ClientPresenter extends BasePresenter
         }
     }
 
+    public function clientFormSubmitted(Form $form)
+    {
+        $data = $form->getValues();
+
+        if ($this->action === 'edit') {
+            $clientId = $this->getParameter('id');
+            $this->clientRepository->updateClient($clientId, $data);
+
+            $this->flashMessage('Klient úspešne upravený.', 'success');
+            $this->redirect(':Account:client:');
+        } else {
+            $data->user_id = $this->user->getId();
+            $data->created = new \DateTime();
+            $this->clientRepository->insertClient($data);
+
+            $this->flashMessage('Klient úspešne vytvorený.', 'success');
+            $this->redirect(':Account:client:');
+        }
+    }
+
     protected function createComponentGrid($name)
     {
 
@@ -62,33 +78,33 @@ class ClientPresenter extends BasePresenter
 
         $grid->setModel($this->selectionFactory->table($table)->where('user_id', $this->user->getId()));
 
-        $grid->addColumn('id', '#');
-        $grid->addFilter('id', 'id');
+        $grid->addColumnText('id', '#');
+        $grid->addFilterText('id', 'id');
 
-        $grid->addColumn('name', 'Klient');
-        $grid->addFilter('name', 'name');
+        $grid->addColumnText('name', 'Klient');
+        $grid->addFilterText('name', 'name');
 
-        $grid->addColumn('street', 'Adresa');
-        $grid->addFilter('street', 'street');
+        $grid->addColumnText('street', 'Adresa');
+        $grid->addFilterText('street', 'street');
 
-        $grid->addColumn('zip', 'PSČ');
-        $grid->addFilter('zip', 'zip');
+        $grid->addColumnText('zip', 'PSČ');
+        $grid->addFilterText('zip', 'zip');
 
-        $grid->addColumn('city', 'Mesto');
-        $grid->addFilter('city', 'city');
+        $grid->addColumnText('city', 'Mesto');
+        $grid->addFilterText('city', 'city');
 
-        $grid->addColumn('tel', 'Telefón');
-        $grid->addFilter('tel', 'tel');
+        $grid->addColumnText('tel', 'Telefón');
+        $grid->addFilterText('tel', 'tel');
 
-        $grid->addColumn('ico', 'IČO');
-        $grid->addFilter('ico', 'ico');
+        $grid->addColumnText('ico', 'IČO');
+        $grid->addFilterText('ico', 'ico');
 
-        $grid->addAction('edit', 'Upraviť')->setIcon('pencil');
-        $grid->addAction('delete', 'Vymazať')
+        $grid->addActionHref('edit', 'Upraviť')->setIcon('pencil')->getElementPrototype()->addAttributes(array('class' => 'no-ajax'));
+        $grid->addActionHref('delete', 'Vymazať')
             ->setIcon('trash')
             ->setConfirm('Naozaj chcete vymazať tohto klienta?');
 
-        $grid->setExporting($table);
+        $grid->setExport($table);
     }
 
     /**
@@ -99,7 +115,6 @@ class ClientPresenter extends BasePresenter
     protected function createComponentInsertEditClientForm()
     {
         $form = new Form();
-        $form->setRenderer(new BootstrapRenderer());
 
         $form->addText('name', 'Meno klienta');
         $form->addText('street', 'Ulica');
@@ -122,25 +137,5 @@ class ClientPresenter extends BasePresenter
         }
 
         return $form;
-    }
-
-    public function clientFormSubmitted(Form $form)
-    {
-        $data = $form->getValues();
-
-        if ($this->action === 'edit') {
-            $clientId = $this->getParameter('id');
-            $this->clientRepository->updateClient($clientId, $data);
-
-            $this->flashMessage('Klient úspešne upravený.', 'success');
-            $this->redirect(':Account:client:');
-        } else {
-            $data->user_id = $this->user->getId();
-            $data->created = new \DateTime();
-            $this->clientRepository->insertClient($data);
-
-            $this->flashMessage('Klient úspešne vytvorený.', 'success');
-            $this->redirect(':Account:client:');
-        }
     }
 } 

@@ -8,9 +8,7 @@
 namespace AccountModule;
 
 
-use Grido\Components\Filters\Filter;
 use Grido\Grid;
-use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 use Nette\Application\UI\Form;
 use Nette\Database\SelectionFactory;
 use PdfResponse;
@@ -101,6 +99,41 @@ class InvoicePresenter extends BasePresenter
         }
     }
 
+    public function invoiceFormSubmitted(Form $form)
+    {
+        $data = $form->getValues();
+        $invoiceItem = $data->item;
+        unset($data->item);
+
+        if ($this->action === 'edit') {
+            $invoiceId = $this->getParameter('id');
+
+            $this->invoiceRepository->updateInvoice($invoiceId, $data);
+            $this->invoiceItemsRepository->updateItems($invoiceId, $invoiceItem);
+
+            $this->flashMessage('Faktúra úspešne upravená.', 'success');
+            $this->redirect(':Account:invoice:');
+        } else {
+            $data->user_id = $this->user->getId();
+
+            $data->maturity_date = $this->getRightFormat($data->maturity_date);
+            $data->tax_duty_date = $this->getRightFormat($data->tax_duty_date);
+            $data->delivery_date = $this->getRightFormat($data->delivery_date);
+            $data->date_of_issue = $this->getRightFormat($data->date_of_issue);
+
+            $invoiceId = $this->invoiceRepository->insertInvoice($data);
+            $this->invoiceItemsRepository->insertItems($invoiceId, $invoiceItem);
+
+            $this->flashMessage('Faktúra úspešne vytvorená.', 'success');
+            $this->redirect(':Account:invoice:');
+        }
+    }
+
+    protected function getRightFormat($date)
+    {
+        return date('Y-m-d', strtotime($date));
+    }
+
     protected function createComponentGrid($name)
     {
 
@@ -127,13 +160,18 @@ class InvoicePresenter extends BasePresenter
         $grid->addColumnText('maturity_date', 'Dátum splatnosti');
         $grid->addFilterText('maturity_date', 'maturity_date');
 
-        $grid->addActionHref('edit', 'Upraviť')->setIcon('pencil');
+        $grid->addActionHref('edit', 'Upraviť')->setIcon('pencil')->getElementPrototype()->addAttributes(array('class' => 'no-ajax'));
         $grid->addActionHref('show', 'PDF')->setIcon('list-alt');
         $grid->addActionHref('delete', 'Vymazať')
             ->setIcon('trash')
             ->setConfirm('Naozaj chcete vymazať túto faktúru?');
 
         $grid->setExport($table);
+    }
+
+    private function getClients()
+    {
+        return $this->clientRepository->getClientsForUser($this->user->getId());
     }
 
     protected function createComponentInsertEditInvoiceForm()
@@ -183,45 +221,5 @@ class InvoicePresenter extends BasePresenter
         }
 
         return $form;
-    }
-
-    public function invoiceFormSubmitted(Form $form)
-    {
-        $data = $form->getValues();
-        $invoiceItem = $data->item;
-        unset($data->item);
-
-        if ($this->action === 'edit') {
-            $invoiceId = $this->getParameter('id');
-
-            $this->invoiceRepository->updateInvoice($invoiceId, $data);
-            $this->invoiceItemsRepository->updateItems($invoiceId, $invoiceItem);
-
-            $this->flashMessage('Faktúra úspešne upravená.', 'success');
-            $this->redirect(':Account:invoice:');
-        } else {
-            $data->user_id = $this->user->getId();
-
-            $data->maturity_date = $this->getRightFormat($data->maturity_date);
-            $data->tax_duty_date = $this->getRightFormat($data->tax_duty_date);
-            $data->delivery_date = $this->getRightFormat($data->delivery_date);
-            $data->date_of_issue = $this->getRightFormat($data->date_of_issue);
-
-            $invoiceId = $this->invoiceRepository->insertInvoice($data);
-            $this->invoiceItemsRepository->insertItems($invoiceId, $invoiceItem);
-
-            $this->flashMessage('Faktúra úspešne vytvorená.', 'success');
-            $this->redirect(':Account:invoice:');
-        }
-    }
-
-    protected function getRightFormat($date)
-    {
-        return date('Y-m-d', strtotime($date));
-    }
-
-    private function getClients()
-    {
-        return $this->clientRepository->getClientsForUser($this->user->getId());
     }
 } 
